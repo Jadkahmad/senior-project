@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { JSX, useState } from "react";
+import ParentForm from "./forms/ParentForm";
 
 // USE LAZY LOADING
 
@@ -20,7 +21,9 @@ const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element
 } = {
   teacher: (type, data) => <TeacherForm type={type} data={data} />,
-  student: (type, data) => <StudentForm type={type} data={data} />
+  student: (type, data) => <StudentForm type={type} data={data} />,
+  parent: (type, data) => <ParentForm type={type} data={data} />
+  
 };
 
 const FormModal = ({
@@ -34,12 +37,12 @@ const FormModal = ({
     | "student"
     | "parent"
     | "subject"
-    | "class"
+    | "session"
     | "lesson"
     | "exam"
     | "assignment"
     | "result"
-    | "attendance"
+    | "payment"
     | "event"
     | "announcement";
   type: "create" | "update" | "delete";
@@ -49,10 +52,10 @@ const FormModal = ({
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
     type === "create"
-      ? "bg-lamaYellow"
+      ? "bg-yellow"
       : type === "update"
-      ? "bg-lamaSky"
-      : "bg-lamaPurple";
+      ? "bg-sky-300"
+      : "bg-purple";
 
   const [open, setOpen] = useState(false);
 
@@ -82,7 +85,7 @@ const FormModal = ({
         <Image src={`/${type}.png`} alt="" width={16} height={16} />
       </button>
       {open && (
-        <div className="w-screen h-screen absolute left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+        <div className=" bg-black opacity-90 w-screen h-screen absolute left-0 top-0 z-50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
             <div

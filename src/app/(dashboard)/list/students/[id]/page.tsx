@@ -1,5 +1,5 @@
 import Announcements from "@/app/components/dashboard/Announcemens";
-import BigCalendar from "@/app/components/BigCalendar";
+import BigCalendar from "@/app/components/dashboard/BigCalendar";
 
 import Image from "next/image";
 import Link from "next/link";
