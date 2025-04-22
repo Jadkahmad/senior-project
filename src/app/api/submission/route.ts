@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {Resend} from 'resend';
-
+import {createConnection} from '@/app/lib/db';
+const db = await createConnection();
 export async function POST(req: Request){
     
     const body = await req.json();
@@ -13,6 +14,20 @@ export async function POST(req: Request){
       address,
       notes
     } = body;
+    await db.execute(
+      `INSERT INTO application
+      (First_name, Last_name, Email,Phone,Address,User_type,Status)
+      VALUES (?,?,?,?,?,?,?)`,
+      [
+      fullname,
+      fullname,
+      email,
+      phone,
+      address,
+      role,
+      notes
+      ]
+    );
     const resend = new Resend(process.env.RESEND_API_KEY);
     resend.emails.send({
         from: 'onboarding@resend.dev',

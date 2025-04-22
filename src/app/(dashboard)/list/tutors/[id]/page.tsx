@@ -1,5 +1,5 @@
 import Announcements from "@/app/components/dashboard/Announcemens";
-import BigCalendar from "@/app/components/BigCalendar";
+import BigCalendar from "@/app/components/dashboard/BigCalendar";
 import FormModal from "@/app/components/FormModel";
 
 import { role } from "@/app/lib/data";

@@ -34,8 +34,8 @@ const columns = [
     className: "hidden md:table-cell",
   },
   {
-    header: "Classes",
-    accessor: "classes",
+    header: "Experience Years",
+    accessor: "experience years",
     className: "hidden md:table-cell",
   },
   {

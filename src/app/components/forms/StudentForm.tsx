@@ -3,11 +3,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import InputField from "../InputField";
+import InputField from "./InputField";
 import Image from "next/image";
 
+const mockParents = [
+  { id: 1, name: "John Doe" },
+  { id: 2, name: "Sarah Smith" },
+  { id: 3, name: "Michael Johnson" },
+]
+
 const schema = z.object({
-  username: z
+  ID: z
     .string()
     .min(3, { message: "Username must be at least 3 characters long!" })
     .max(20, { message: "Username must be at most 20 characters long!" }),
@@ -19,13 +25,13 @@ const schema = z.object({
   lastName: z.string().min(1, { message: "Last name is required!" }),
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
-  bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  birthday: z
-  .string()
-  .min(1, { message: "Birthday is required!" })
-  .transform((val) => new Date(val)),
-  sex: z.enum(["male", "female"], { message: "Sex is required!" }),
-  // img: z.instanceof(File, { message: "Image is required" }),
+  
+  birthday: z.date({ message: "Birthday is required!" }),
+  gender: z.enum(["male", "female"], { message: "Gender is required!" }),
+  regtype: z.enum(["Monthly-Center", "Monthly-Private", "PerSession-Center","PerSession-Private"], { message: "Registration Type is required!" }),
+  level: z.string().min(1, { message: "Level is Required" }),
+  img: z.instanceof(File, { message: "Image is required" }),
+  parentId: z.string().min(1, { message: "Parent is required" }),
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -45,33 +51,8 @@ const StudentForm = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    try{
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (value instanceof Date) {
-          formData.append(key, value.toISOString().split("T")[0]); // Format date
-        } else {
-          formData.append(key, value as string);
-        }
-      });
-      const res = await fetch("/api/students", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await res.json();
-      if (res.ok) {
-        alert("Student added successfully!");
-      } else {
-        alert("Failed to add student.");
-        console.error(result);
-      }
-
-    }catch(err){
-      console.error("Submit error:", err);
-      alert("Something went wrong.");
-    }
+  const onSubmit = handleSubmit((data) => {
+    console.log(data); //here student should be added to the dataBase and to the List of student
   });
 
   return (
@@ -82,11 +63,11 @@ const StudentForm = ({
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Username"
-          name="username"
-          defaultValue={data?.username}
+          label="ID"
+          name="ID"
+          defaultValue={data?.id}
           register={register}
-          error={errors?.username}
+          error={errors?.ID}
         />
         <InputField
           label="Email"
@@ -136,13 +117,15 @@ const StudentForm = ({
           register={register}
           error={errors.address}
         />
+
         <InputField
-          label="Blood Type"
-          name="bloodType"
-          defaultValue={data?.bloodType}
+          label="Level"
+          name="level"
+          defaultValue={data?.level}
           register={register}
-          error={errors.bloodType}
+          error={errors.level}
         />
+       
         <InputField
           label="Birthday"
           name="birthday"
@@ -152,21 +135,59 @@ const StudentForm = ({
           type="date"
         />
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Sex</label>
+          <label className="text-xs text-gray-500">Gender</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("sex")}
-            defaultValue={data?.sex}
+            {...register("gender")}
+            defaultValue={data?.gender}
           >
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
-          {errors.sex?.message && (
+          {errors.gender?.message && (
             <p className="text-xs text-red-400">
-              {errors.sex.message.toString()}
+              {errors.gender.message.toString()}
             </p>
           )}
         </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Registartion Type</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("gender")}
+            defaultValue={data?.regtype}
+          >
+            <option value="MonthlyC">Monthly-Center</option>
+            <option value="MonthlyP">Monthly-Private</option>
+            <option value="PerSessionC">PerSession-Center</option>
+            <option value="PerSessionP">PerSession-Private</option>
+          </select>
+          {errors.regtype?.message && (
+            <p className="text-xs text-red-400">
+              {errors.regtype.message.toString()}
+            </p>
+          )}
+
+        </div>
+
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+  <label className="text-xs text-gray-500">Parent</label>
+  <select
+    className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+    {...register("parentId")}
+    defaultValue={data?.parentId}
+  >
+    <option value="">Select Parent</option>
+    {mockParents.map((parent) => (
+      <option key={parent.id} value={parent.id}>
+        {parent.name}
+      </option>
+    ))}
+  </select>
+  {errors.parentId?.message && (
+    <p className="text-xs text-red-400">{errors.parentId.message}</p>
+  )}
+</div>
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           <label
             className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
@@ -175,15 +196,11 @@ const StudentForm = ({
             <Image src="/upload.png" alt="" width={28} height={28} />
             <span>Upload a photo</span>
           </label>
-          {/* <input type="file" id="img" {...register("img")} className="hidden" />
-          {errors.img?.message && (
-            <p className="text-xs text-red-400">
-              {errors.img.message.toString()}
-            </p>
-          )} */}
+          <input type="file" id="img" {...register("img")} className="hidden" />
+          
         </div>
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

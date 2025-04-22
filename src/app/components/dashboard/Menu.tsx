@@ -46,27 +46,17 @@ const menuItems = [
       {
         icon: "/attendance.png",
         label: "Payments",
-        href: "/list/attendance",
+        href: "/list/payments",
         visible: ["admin", "tutor", "student", "parent"],
       },
-      {
-        icon: "/calendar.png",
-        label: "Events",
-        href: "/list/events",
-        visible: ["admin", "tutor", "student", "parent"],
-      },
+      
       {
         icon: "/message.png",
         label: "Messages",
         href: "/list/messages",
         visible: ["admin", "tutor", "student", "parent"],
       },
-      {
-        icon: "/announcement.png",
-        label: "Announcements",
-        href: "/list/announcements",
-        visible: ["admin", "tutor", "student", "parent"],
-      },
+      
     ],
   },
   {
