@@ -2,6 +2,48 @@
 
 export let role = "admin";
 
+export type Application = {
+  id: number;
+  userType: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  status: string;
+  registrationDate:string;
+};
+
+export const applicationsData: Application[] = [
+  {
+    id: 1,
+    userType: "tutor",
+    firstName: "Sara",
+    lastName: "Khalil",
+    email: "sara.khalil@example.com",
+    phone: "+96170333444",
+    address: "Beirut, Lebanon",
+    
+    registrationDate: "2025-04-20",
+    status: "pending",
+  },
+  {
+    id: 2,
+    userType: "student",
+    firstName: "Rami",
+    lastName: "Fakih",
+    email: "rami.fakih@example.com",
+    phone: "+96181222333",
+    address: "Saida, Lebanon",
+   
+    registrationDate: "2025-04-19",
+    status: "pending",
+  },
+
+  
+  ]
+
+
 export const teachersData = [
   {
     id: 1,

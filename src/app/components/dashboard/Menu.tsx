@@ -52,9 +52,9 @@ const menuItems = [
       
       {
         icon: "/message.png",
-        label: "Messages",
-        href: "/list/messages",
-        visible: ["admin", "tutor", "student", "parent"],
+        label: "Application",
+        href: "/list/application",
+        visible: ["admin"],
       },
       
     ],

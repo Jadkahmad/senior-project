@@ -2,8 +2,9 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { JSX, useState } from "react";
+import { JSX, SetStateAction, useState } from "react";
 import ParentForm from "./forms/ParentForm";
+
 
 // USE LAZY LOADING
 
@@ -22,7 +23,7 @@ const forms: {
 } = {
   teacher: (type, data) => <TeacherForm type={type} data={data} />,
   student: (type, data) => <StudentForm type={type} data={data} />,
-  parent: (type, data) => <ParentForm type={type} data={data} />
+  parent: (type, data) => <ParentForm type={type} data={data} />,
   
 };
 
@@ -36,16 +37,15 @@ const FormModal = ({
     | "teacher"
     | "student"
     | "parent"
-    | "subject"
+    
     | "session"
-    | "lesson"
-    | "exam"
-    | "assignment"
-    | "result"
+    
+    
+  
     | "payment"
-    | "event"
+    | "applications"
     | "announcement";
-  type: "create" | "update" | "delete";
+  type: "create" | "update" | "delete"| "approve"|"reject";
   data?: any;
   id?: number;
 }) => {
@@ -69,7 +69,7 @@ const FormModal = ({
           Delete
         </button>
       </form>
-    ) : type === "create" || type === "update" ? (
+    ) : type === "create" || type === "update"  ? (
       forms[table](type, data)
     ) : (
       "Form not found!"
