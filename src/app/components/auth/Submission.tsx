@@ -97,7 +97,7 @@ const SubmissionForm : React.FC = () => {
               icon={IdCard}
               label="Full Name"
               register={register}
-              name="name"
+              name="fullname"
               type="text"
               errors={errors}
               placeholder="  Enter Your Name..."
@@ -120,7 +120,7 @@ const SubmissionForm : React.FC = () => {
               icon={Phone}
               label="Phone Number"
               register={register}
-              name="Phone Number"
+              name="number"
               
               errors={errors}
               placeholder="  Enter Your Number...+961"
@@ -147,7 +147,7 @@ const SubmissionForm : React.FC = () => {
               icon={GraduationCap}
               label="Educational Stage"
               register={register}
-              name="Year Level"
+              name="program"
               type="text"
               errors={errors}
               placeholder="  Enter Your Current Academic Level..."

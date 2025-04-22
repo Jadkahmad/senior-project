@@ -20,9 +20,12 @@ const schema = z.object({
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
   bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  birthday: z.date({ message: "Birthday is required!" }),
+  birthday: z
+  .string()
+  .min(1, { message: "Birthday is required!" })
+  .transform((val) => new Date(val)),
   sex: z.enum(["male", "female"], { message: "Sex is required!" }),
-  img: z.instanceof(File, { message: "Image is required" }),
+  // img: z.instanceof(File, { message: "Image is required" }),
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -42,8 +45,33 @@ const StudentForm = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     console.log(data);
+    try{
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value instanceof Date) {
+          formData.append(key, value.toISOString().split("T")[0]); // Format date
+        } else {
+          formData.append(key, value as string);
+        }
+      });
+      const res = await fetch("/api/students", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (res.ok) {
+        alert("Student added successfully!");
+      } else {
+        alert("Failed to add student.");
+        console.error(result);
+      }
+
+    }catch(err){
+      console.error("Submit error:", err);
+      alert("Something went wrong.");
+    }
   });
 
   return (
@@ -147,12 +175,12 @@ const StudentForm = ({
             <Image src="/upload.png" alt="" width={28} height={28} />
             <span>Upload a photo</span>
           </label>
-          <input type="file" id="img" {...register("img")} className="hidden" />
+          {/* <input type="file" id="img" {...register("img")} className="hidden" />
           {errors.img?.message && (
             <p className="text-xs text-red-400">
               {errors.img.message.toString()}
             </p>
-          )}
+          )} */}
         </div>
       </div>
       <button className="bg-blue-400 text-white p-2 rounded-md">

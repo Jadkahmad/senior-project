@@ -7,6 +7,7 @@ import CustomCarousel from "./CustomCarousel";
 import TextInput from "../FormInputs/TextInput";
 import SubmitButton from "../FormInputs/SubmitButton";
 import PasswordInput from "../FormInputs/PasswordInput";
+import { signIn } from "next-auth/react";
 import { IdCard, Lock, LogInIcon } from "lucide-react";
 export type RegisterInputProps = {
   
@@ -27,6 +28,28 @@ export default function SignIn() {
   async function onSubmit(data: RegisterInputProps) {
     console.log(data);
     //Here i should send data to my backend
+    const res = await signIn("credentials", {
+      redirect: false, // we’ll handle redirect manually
+      id: data.id,
+      password: data.password,
+    });
+
+    if (res?.ok) {
+      // Optionally fetch the session to access role info
+      const session = await fetch("/api/auth/session").then(res => res.json());
+
+      // Redirect based on role
+      const role = session?.user?.role;
+
+      if (role === "student") router.push("/student");
+      else if (role === "tutor") router.push("/tutor");
+      else if (role === "parent") router.push("/parent");
+      else if (role === "admin") router.push("/admin");
+      else router.push("/");
+
+    } else {
+      alert("Invalid username or password");
+    }
   }
   return (
     <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
@@ -46,7 +69,7 @@ export default function SignIn() {
             icon={IdCard}
               label="ID"
               register={register}
-              name="ID"
+              name="id"
               errors={errors}
               placeholder="  Enter Your Id"
             />
