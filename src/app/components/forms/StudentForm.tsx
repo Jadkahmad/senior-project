@@ -30,7 +30,7 @@ const schema = z.object({
   gender: z.enum(["male", "female"], { message: "Gender is required!" }),
   regtype: z.enum(["Monthly-Center", "Monthly-Private", "PerSession-Center","PerSession-Private"], { message: "Registration Type is required!" }),
   level: z.string().min(1, { message: "Level is Required" }),
-  img: z.instanceof(File, { message: "Image is required" }),
+  
   parentId: z.string().min(1, { message: "Parent is required" }),
 });
 
@@ -188,17 +188,10 @@ const StudentForm = ({
     <p className="text-xs text-red-400">{errors.parentId.message}</p>
   )}
 </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
-          <label
-            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
-            htmlFor="img"
-          >
-            <Image src="/upload.png" alt="" width={28} height={28} />
-            <span>Upload a photo</span>
-          </label>
-          <input type="file" id="img" {...register("img")} className="hidden" />
+        
           
-        </div>
+          
+        
       </div>
       <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
         {type === "create" ? "Create" : "Update"}
