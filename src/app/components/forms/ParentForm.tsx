@@ -40,8 +40,9 @@ const ParentForm = ({
   });
 
   const onSubmit = handleSubmit(async (formData) => {
-    const router = useRouter()
+    
     try {
+     
       const data = new FormData();
       data.append("id", formData.id);
       data.append("firstName", formData.firstName);
@@ -60,8 +61,7 @@ const ParentForm = ({
   
       const result = await res.json();
       console.log("Success:", result.message);
-      router.refresh();
-  
+
     } catch (error) {
       console.error("Submission error:", error);
       // Optional: show error to user

@@ -45,7 +45,7 @@ const TeacherForm = ({
   });
 
   const onSubmit = handleSubmit(async (formData) => {
-    const router = useRouter()
+    
     try {
       const data = new FormData();
       data.append("id", formData.id);
@@ -68,7 +68,7 @@ const TeacherForm = ({
       const result = await res.json();
       console.log("Tutor created:", result.message);
   
-      router.refresh();
+   
   
     } catch (error) {
       console.error("Error submitting tutor:", error);

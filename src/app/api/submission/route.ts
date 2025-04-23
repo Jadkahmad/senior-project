@@ -25,14 +25,13 @@ export async function POST(req: Request){
       phone,
       address,
       role,
-      notes,
       "Pending"
       ]
     );
     const resend = new Resend(process.env.RESEND_API_KEY);
     resend.emails.send({
         from: 'onboarding@resend.dev',
-        to: 'nancyrazzak5@gmail.com',
+        to: 'jadahmad1922@gmail.com',
         subject: fullname + ' submission',
         html: `
         <h2>New Submission Received</h2>

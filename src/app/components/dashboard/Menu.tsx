@@ -98,7 +98,7 @@ const Menu = () => {
               return isLogout ? (
                 <button
                   key={item.label}
-                  onClick={() => signOut({ callbackUrl: "/sign-in" })}
+                  onClick={() => signOut({ callbackUrl: "/" })}
                   className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-sky-100 w-full"
                 >
                   <Image src={item.icon} alt="" width={20} height={20} />

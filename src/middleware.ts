@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
+import path from 'path';
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -9,14 +10,14 @@ export async function middleware(req: NextRequest) {
   // Allow requests to static files, API routes, and public home
   if (
     pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
-    pathname === '/'
+    pathname.startsWith('/api')
+    || (pathname === '/' && !token)
   ) {
     return NextResponse.next();
   }
 
-  // ✅ If token exists and trying to access /sign-in → redirect to their dashboard
-  if (token && pathname === '/sign-in') {
+ console.log('THIS IS THE PATH: '+pathname);
+  if (token && (pathname === '/sign-in' || pathname === '/')) {
     let redirectPath = '/';
     switch (token.role) {
       case 'student':
@@ -61,6 +62,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
     '/admin',
     '/admin/:path*',
     '/tutor',

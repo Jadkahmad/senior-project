@@ -81,7 +81,7 @@ const StudentForm = ({
   
   
     const onSubmit = handleSubmit(async (formData) => {
-      const router = useRouter()
+      
       try {
         const data = new FormData();
         data.append("id", formData.id);
@@ -106,7 +106,7 @@ const StudentForm = ({
     
         const result = await res.json();
         console.log("Success:", result.message);
-        router.refresh();
+       
       } catch (error) {
         console.error("Error submitting student:", error);
         alert("Error adding student");

@@ -5,7 +5,7 @@ import { Resend } from 'resend';
 
 const db = await createConnection();
 export async function POST(req: Request){
-
+  console.log(req);
     const formData = await req.formData();
 
     const password = formData.get('password') as string;
