@@ -5,7 +5,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "./InputField";
 import Image from "next/image";
-
+import { useEffect, useState } from "react";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
 const mockParents = [
   { id: 1, name: "John Doe" },
   { id: 2, name: "Sarah Smith" },
@@ -13,7 +15,7 @@ const mockParents = [
 ]
 
 const schema = z.object({
-  ID: z
+  id: z
     .string()
     .min(3, { message: "Username must be at least 3 characters long!" })
     .max(20, { message: "Username must be at most 20 characters long!" }),
@@ -26,8 +28,12 @@ const schema = z.object({
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
   
-  birthday: z.date({ message: "Birthday is required!" }),
-  gender: z.enum(["male", "female"], { message: "Gender is required!" }),
+  birthday: z.coerce.date({ message: "Birthday is required!" }),
+  gender: z.preprocess(
+    (val) => (typeof val === "string" ? val.toLowerCase() : val),
+    z.enum(["male", "female"], { message: "Gender is required!" })
+  )
+  ,
   regtype: z.enum(["Monthly-Center", "Monthly-Private", "PerSession-Center","PerSession-Private"], { message: "Registration Type is required!" }),
   level: z.string().min(1, { message: "Level is Required" }),
   
@@ -50,10 +56,63 @@ const StudentForm = ({
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
   });
+  const [parents, setParents] = useState<{ id: number; name: string }[]>([]);
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data); //here student should be added to the dataBase and to the List of student
-  });
+  useEffect(() => {
+    const fetchParents = async () => {
+      try {
+        const res = await fetch("/api/parents");
+        if (!res.ok) throw new Error("Failed to fetch parents");
+        const data = await res.json();
+  
+        const formatted = data.map((parent: any) => ({
+          id: parent.id,
+          name: `${parent.First_name} ${parent.Last_name}`,
+        }));
+  
+        setParents(formatted);
+      } catch (error) {
+        console.error("Error fetching parents:", error);
+      }
+    };
+  
+    fetchParents();
+  }, []);
+  
+  
+    const onSubmit = handleSubmit(async (formData) => {
+      const router = useRouter()
+      try {
+        const data = new FormData();
+        data.append("id", formData.id);
+        data.append("email", formData.email);
+        data.append("password", formData.password);
+        data.append("firstName", formData.firstName);
+        data.append("lastName", formData.lastName);
+        data.append("phone", formData.phone);
+        data.append("address", formData.address);
+        data.append("birthday", formData.birthday.toISOString().split("T")[0]); // format date
+        data.append("gender", formData.gender);
+        data.append("regtype", formData.regtype);
+        data.append("level", formData.level);
+        data.append("parentId", formData.parentId);
+    
+        const res = await fetch("/api/students", {
+          method: "POST",
+          body: data,
+        });
+    
+        if (!res.ok) throw new Error("Failed to create student");
+    
+        const result = await res.json();
+        console.log("Success:", result.message);
+        router.refresh();
+      } catch (error) {
+        console.error("Error submitting student:", error);
+        alert("Error adding student");
+      }
+    });
+    
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -64,10 +123,10 @@ const StudentForm = ({
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
           label="ID"
-          name="ID"
+          name="id"
           defaultValue={data?.id}
           register={register}
-          error={errors?.ID}
+          error={errors?.id}
         />
         <InputField
           label="Email"
@@ -154,13 +213,14 @@ const StudentForm = ({
           <label className="text-xs text-gray-500">Registartion Type</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("gender")}
+            {...register("regtype")}
             defaultValue={data?.regtype}
           >
-            <option value="MonthlyC">Monthly-Center</option>
-            <option value="MonthlyP">Monthly-Private</option>
-            <option value="PerSessionC">PerSession-Center</option>
-            <option value="PerSessionP">PerSession-Private</option>
+            <option value="Monthly-Center">Monthly-Center</option>
+<option value="Monthly-Private">Monthly-Private</option>
+<option value="PerSession-Center">PerSession-Center</option>
+<option value="PerSession-Private">PerSession-Private</option>
+
           </select>
           {errors.regtype?.message && (
             <p className="text-xs text-red-400">
@@ -178,7 +238,7 @@ const StudentForm = ({
     defaultValue={data?.parentId}
   >
     <option value="">Select Parent</option>
-    {mockParents.map((parent) => (
+    {parents.map((parent) => (
       <option key={parent.id} value={parent.id}>
         {parent.name}
       </option>
@@ -198,6 +258,7 @@ const StudentForm = ({
       </button>
     </form>
   );
-};
+}
+
 
 export default StudentForm;

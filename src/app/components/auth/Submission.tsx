@@ -39,6 +39,29 @@ const SubmissionForm : React.FC = () => {
   async function onSubmit(data: RegisterInputProps) {
       console.log(data);
       //Here i should send data to my backend
+      try {
+        const res = await fetch('/api/submission', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+    
+        if (!res.ok) {
+          throw new Error('Failed to submit form');
+        }
+    
+        const result = await res.json();
+        console.log(result); 
+    
+        alert("Email sent");
+      } catch (error) {
+        console.error('Submission error:', error);
+        alert("Error adding application");
+      }
+
+
   }
 
   return (
@@ -110,7 +133,7 @@ const SubmissionForm : React.FC = () => {
               icon={MdEmail}
               label="Email"
               register={register}
-              name="Email"
+              name="email"
               type="email"
               errors={errors}
               placeholder="  johndoe@gmail.com"
@@ -120,7 +143,7 @@ const SubmissionForm : React.FC = () => {
               icon={Phone}
               label="Phone Number"
               register={register}
-              name="number"
+              name="phone"
               
               errors={errors}
               placeholder="  Enter Your Number...+961"
@@ -137,7 +160,7 @@ const SubmissionForm : React.FC = () => {
               icon={FaLocationArrow}
               label="Address"
               register={register}
-              name="Location"
+              name="address"
               type="text"
               errors={errors}
               placeholder="  Enter Your Location..."

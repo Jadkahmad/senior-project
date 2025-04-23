@@ -5,6 +5,7 @@ const db = await createConnection();
 export async function POST(req: Request){
     
     const body = await req.json();
+    console.log(body);
     const {
       fullname,
       email,
@@ -16,16 +17,16 @@ export async function POST(req: Request){
     } = body;
     await db.execute(
       `INSERT INTO application
-      (First_name, Last_name, Email,Phone,Address,User_type,Status)
-      VALUES (?,?,?,?,?,?,?)`,
+      (Full_name, Email,Phone,Address,User_type,Status)
+      VALUES (?,?,?,?,?,?)`,
       [
-      fullname,
       fullname,
       email,
       phone,
       address,
       role,
-      notes
+      notes,
+      "Pending"
       ]
     );
     const resend = new Resend(process.env.RESEND_API_KEY);

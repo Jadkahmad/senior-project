@@ -38,11 +38,14 @@ export const authOptions = {
 
         // Student login
         const [studentRows]: [Student[] & RowDataPacket[], FieldPacket[]] = await db.execute(
-          'SELECT * FROM Student WHERE userid = ?',
+          'SELECT * FROM Student WHERE User_id = ?',
           [id]
         );
         if (studentRows.length > 0) {
           const user = studentRows[0];
+          console.log("Test");
+          console.log(password);
+          console.log(user.password);
           if (await bcrypt.compare(password, user.password)) {
             return { id: user.userid, name: user.userid, role: 'student' };
           }
@@ -50,7 +53,7 @@ export const authOptions = {
 
         // Tutor login
         const [tutorRows]: [Tutor[] & RowDataPacket[], FieldPacket[]] = await db.execute(
-          'SELECT * FROM tutor WHERE userid = ?',
+          'SELECT * FROM tutor WHERE User_id = ?',
           [id]
         );
         if (tutorRows.length > 0) {
@@ -62,10 +65,11 @@ export const authOptions = {
 
         // Parent login
         const [parentRows]: [Parent[] & RowDataPacket[], FieldPacket[]] = await db.execute(
-          'SELECT * FROM parent WHERE userid = ?',
+          'SELECT * FROM parent WHERE User_id = ?',
           [id]
         );
         if (parentRows.length > 0) {
+          console.log("testt");
           const user = parentRows[0];
           if (await bcrypt.compare(password, user.password)) {
             return { id: user.userid, name: user.userid, role: 'parent' };
@@ -95,7 +99,7 @@ export const authOptions = {
   },
   
   session: {
-    strategy: "jwt" as const, // ✅ use 'as const' to satisfy the type
+    strategy: "jwt" as const, 
     maxAge: 30 * 24 * 60 * 60,
   },
   pages: {

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "./InputField";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   id: z
@@ -20,9 +21,10 @@ const schema = z.object({
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
  
-  subjectspecs: z.date({ message: "Birthday is required!" }),
+  subjectspecs: z.string().min(1,{ message: "subject is required!" }),
   gender: z.enum(["male", "female"], { message: "Sex is required!" }),
-  img: z.instanceof(File, { message: "Image is required" }),
+  // img: z.instanceof(File).optional(),
+
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -42,9 +44,38 @@ const TeacherForm = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data); //here i should send my data to the dataBase
+  const onSubmit = handleSubmit(async (formData) => {
+    const router = useRouter()
+    try {
+      const data = new FormData();
+      data.append("id", formData.id);
+      data.append("email", formData.email);
+      data.append("password", formData.password);
+      data.append("firstName", formData.firstName);
+      data.append("lastName", formData.lastName);
+      data.append("phone", formData.phone);
+      data.append("subjectspecs", formData.subjectspecs); // match backend key
+      data.append("gender", formData.gender);
+  
+  
+      const res = await fetch("/api/tutors", {
+        method: "POST",
+        body: data,
+      });
+  
+      if (!res.ok) throw new Error("Failed to create tutor");
+  
+      const result = await res.json();
+      console.log("Tutor created:", result.message);
+  
+      router.refresh();
+  
+    } catch (error) {
+      console.error("Error submitting tutor:", error);
+      alert("Error adding tutor");
+    }
   });
+  
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -55,7 +86,7 @@ const TeacherForm = ({
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
           label="ID"
-          name="ID"
+          name="id"
           defaultValue={data?.id}
           register={register}
           error={errors?.id}
@@ -111,7 +142,7 @@ const TeacherForm = ({
         
         <InputField
           label="Subject Specification"
-          name="ubject Specification"
+          name="subjectspecs"
           defaultValue={data?.subjectSpecs}
           register={register}
           error={errors.subjectspecs}
@@ -134,14 +165,14 @@ const TeacherForm = ({
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
-          <label
+          {/* <label
             className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
             htmlFor="img"
-          >
-            <Image src="/upload.png" alt="" width={28} height={28} />
+          > */}
+            {/* <Image src="/upload.png" alt="" width={28} height={28} />
             <span>Upload a photo</span>
           </label>
-          <input type="file" id="img" {...register("img")} className="hidden" />
+          <input type="file" id="img" {...register("img")} className="hidden" /> */}
           
         </div>
       </div>
