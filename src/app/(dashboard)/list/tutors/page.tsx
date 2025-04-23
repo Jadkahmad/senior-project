@@ -1,3 +1,4 @@
+"use client";
 import FormModal from "@/app/components/FormModel";
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
@@ -5,6 +6,7 @@ import TableSearch from "@/app/components/dashboard/TableSearch";
 import { role , teachersData } from "@/app/lib/data";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Tutor = {
   id: number;
@@ -55,6 +57,39 @@ const columns = [
 ];
 
 const TeacherListPage = () => {
+  const [tutors, setTutors] = useState<Tutor[]>([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchTutors = async () => {
+    try {
+      const res = await fetch("/api/tutors"); 
+      if (!res.ok) throw new Error("Failed to fetch tutors");
+
+      const data = await res.json();
+
+      const formatted = data.map((t: any) => ({
+        id: t.id,
+        teacherId: t.User_id,
+        name: t.Full_name,
+        email: t.Email,
+        photo: "/teacher-avatar.png", 
+        phone: t.Phone_number,
+        subjects: t.Subject_specification ? t.Subject_specification.split(",") : [],
+        classes: t.Experience_years ? [`${t.Experience_years} years`] : [],
+        address: t.Address || "N/A",
+      }));
+
+      setTutors(formatted);
+    } catch (err) {
+      console.error("Error loading tutors:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchTutors();
+}, []);
+
   const renderRow = (item: Tutor) => (
     <tr
       key={item.id}
@@ -120,7 +155,7 @@ const TeacherListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={teachersData} />
+      <Table columns={columns} renderRow={renderRow} data={tutors} />
       {/* PAGINATION */}
       <Pagination />
     </div>

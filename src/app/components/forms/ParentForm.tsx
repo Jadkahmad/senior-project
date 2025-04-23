@@ -3,7 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useRouter } from "next/navigation"
 import InputField from "./InputField";
+import { Router } from "lucide-react";
 
 const schema = z.object({
   id: z
@@ -17,6 +19,7 @@ const schema = z.object({
     .string()
     .min(8, { message: "Password must be at least 8 characters long!" }),
   address: z.string().min(1, { message: "Address is required!" }),
+  phone: z.string().min(1,{message:"Phone number is required"})
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -36,10 +39,36 @@ const ParentForm = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data); // Send data to backend here
+  const onSubmit = handleSubmit(async (formData) => {
+    const router = useRouter()
+    try {
+      const data = new FormData();
+      data.append("id", formData.id);
+      data.append("firstName", formData.firstName);
+      data.append("lastName", formData.lastName);
+      data.append("email", formData.email);
+      data.append("password", formData.password);
+      data.append("address", formData.address);
+      data.append("phone", formData.phone); 
+  
+      const res = await fetch("/api/parents", {
+        method: "POST",
+        body: data,
+      });
+  
+      if (!res.ok) throw new Error("Failed to create parent");
+  
+      const result = await res.json();
+      console.log("Success:", result.message);
+      router.refresh();
+  
+    } catch (error) {
+      console.error("Submission error:", error);
+      // Optional: show error to user
+      alert("Error adding parent");
+    }
   });
-
+  
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <h1 className="text-xl font-semibold">
@@ -93,6 +122,12 @@ const ParentForm = ({
           defaultValue={data?.address}
           register={register}
           error={errors?.address}
+        />
+         <InputField
+          label="Phone Number"
+          name="phone"
+          defaultValue={data?.phone}
+          register={register}
         />
       </div>
 

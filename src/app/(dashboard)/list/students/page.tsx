@@ -1,3 +1,4 @@
+"use client"; 
 import FormModal from "@/app/components/FormModel";
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
@@ -5,6 +6,7 @@ import TableSearch from "@/app/components/dashboard/TableSearch";
 import { role, studentsData } from "@/app/lib/data";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Student = {
   id: number;
@@ -13,7 +15,7 @@ type Student = {
   email?: string;
   photo: string;
   phone?: string;
-  
+  regtype?:string;
   class: string;
   address: string;
   dateOfAdmission:string;
@@ -62,6 +64,40 @@ const columns = [
 ];
 
 const StudentListPage = () => {
+  const [students, setStudents] = useState<Student[]>([]);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchStudents = async () => {
+    try {
+      const res = await fetch("/api/students");
+      if (!res.ok) throw new Error("Failed to fetch students");
+      const data = await res.json();
+      console.log(data);
+      const formatted = data.map((s: any) => ({
+        id: s.id,
+        studentId: s.User_id,
+        name: `${s.First_name} ${s.Last_name}`,
+        email: s.Email,
+        photo: "/student-avatar.png", 
+        phone: s.Phone_number,
+        regtype: s.Registration_type,
+        class: s.Level,
+        address: s.Address,
+        dateOfAdmission: s.Admission_Date,
+        parentId: s.Parent_id
+      }));
+
+      setStudents(formatted);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchStudents();
+}, []);
+
   const renderRow = (item: Student) => (
     <tr
       key={item.id}
@@ -82,7 +118,7 @@ const StudentListPage = () => {
         </div>
       </td>
       <td className="hidden md:table-cell">{item.studentId}</td>
-      <td className="hidden md:table-cell">{item.parentId}</td>
+      <td className="hidden md:table-cell">{item.regtype}</td>
       <td className="hidden md:table-cell">{item.phone}</td>
       <td className="hidden md:table-cell">{item.address}</td>
       <td className="hidden md:table-cell">{item.dateOfAdmission}</td>
@@ -129,7 +165,7 @@ const StudentListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={studentsData} />
+      <Table columns={columns} renderRow={renderRow} data={students} />
       {/* PAGINATION */}
       <Pagination />
     </div>

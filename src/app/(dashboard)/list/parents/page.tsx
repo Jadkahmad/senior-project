@@ -1,9 +1,11 @@
+"use client";
 import FormModal from "@/app/components/FormModel";
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
 import { parentsData, role } from "@/app/lib/data";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 type Parent = {
   id: number;
@@ -37,6 +39,35 @@ const columns = [
 ];
 
 const ParentListPage = () => {
+  const [parents, setParents] = useState<Parent[]>([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const fetchParents = async () => {
+    try {
+      const res = await fetch("/api/parents");
+      if (!res.ok) throw new Error("Failed to fetch parents");
+      const data = await res.json();
+
+      const formatted = data.map((item: any) => ({
+        id: item.id,
+        name: `${item.First_name} ${item.Last_name}`,
+        email: item.Email,
+        phone: item.Phone_number,
+        address: item.Address
+      }));
+
+      setParents(formatted);
+    } catch (error) {
+      console.error("Error fetching parents:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchParents();
+}, []);
+
   const renderRow = (item: Parent) => (
     <tr
       key={item.id}
@@ -85,7 +116,7 @@ const ParentListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={parentsData} />
+      <Table columns={columns} renderRow={renderRow} data={parents} />
       {/* PAGINATION */}
       <Pagination />
     </div>

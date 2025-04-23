@@ -5,15 +5,13 @@ import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
 
-import { applicationsData } from "@/app/lib/data";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Application = {
   id: number;
   userType: string;
-  firstName: string;
-  lastName: string;
+  fullname: string;
   email: string;
   phone: string;
   status: string;
@@ -32,7 +30,35 @@ const columns = [
 ];
 
 const ApplicationListPage = () => {
-  const [applications, setApplications] = useState<Application[]>(applicationsData);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const res = await fetch("/api/application"); 
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        const formatted = data.map((item: any) => ({
+          id: item.id,
+          userType: item.User_type,
+          fullname: item.Full_name,
+          email: item.Email,
+          phone: item.Phone,
+          address: item.Address,
+          status: item.Status || "pending",
+        }));
+  
+        setApplications(formatted);
+  
+      } catch (error) {
+        console.error("Error loading applications:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApplications();
+  }, []);
 
   const handleStatusChange = (id: number, newStatus: "approved" | "rejected") => {
     setApplications((prev) =>
@@ -49,7 +75,7 @@ const ApplicationListPage = () => {
     >
       <td>{item.id}</td>
       <td>{item.userType}</td>
-      <td>{item.firstName} {item.lastName}</td>
+      <td>{item.fullname}</td>
       <td>{item.email}</td>
       <td>{item.phone}</td>
       <td className="hidden md:table-cell">{item.address}</td>
@@ -91,7 +117,7 @@ const ApplicationListPage = () => {
           <TableSearch />
         </div>
       </div>
-      <Table columns={columns} renderRow={renderRow} data={applicationsData} />
+      <Table columns={columns} renderRow={renderRow} data={applications} />
       <Pagination />
     </div>
   );
