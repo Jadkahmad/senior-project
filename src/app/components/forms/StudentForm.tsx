@@ -154,7 +154,7 @@ const StudentForm = ({
           <label className="text-xs text-gray-500">Registartion Type</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("gender")}
+            {...register("regtype")}
             defaultValue={data?.regtype}
           >
             <option value="MonthlyC">Monthly-Center</option>
