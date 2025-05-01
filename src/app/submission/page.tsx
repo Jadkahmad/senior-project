@@ -3,6 +3,7 @@ import Image from "next/image";
 import SectionHeader from "../components/SectionHeader";
 import SubmissionForm from "../components/auth/Submission";
 import Footer from "../components/HomePage/Footer";
+import { ToastContainer } from "react-toastify";
 export default function page() {
     return (
       <div className='py-2'>
@@ -23,6 +24,7 @@ export default function page() {
 
 
 <SubmissionForm/>
+<ToastContainer />
 <Footer/>
         
       </div>

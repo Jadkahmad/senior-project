@@ -7,7 +7,7 @@ import SubmitButton from "../FormInputs/SubmitButton";
 import { GraduationCap, Heading1, IdCard, Phone, Send } from "lucide-react";
 import { MdEmail, MdGrade } from "react-icons/md";
 import { FaLocationArrow } from "react-icons/fa";
-
+import { toast } from "react-toastify";
 export type RegisterInputProps = {
   
     fullname: string;
@@ -55,10 +55,10 @@ const SubmissionForm : React.FC = () => {
         const result = await res.json();
         console.log(result); 
     
-        alert("Email sent");
+        toast.success("Form submitted, we will respond to you soon!");
       } catch (error) {
-        console.error('Submission error:', error);
-        alert("Error adding application");
+        console.error("Submission error:", error);
+      toast.error("Error adding application");
       }
 
 
@@ -178,7 +178,7 @@ const SubmissionForm : React.FC = () => {
 
                 <div>
                 <label className="block text-sm font-medium text-black mb-3">
-                  Additional Information 
+                  Additional message you'd like to add? 
                 </label>
                 <textarea
                   {...register("notes")}
@@ -189,14 +189,6 @@ const SubmissionForm : React.FC = () => {
                 ></textarea>
               </div>
 
-                
-
-            
-  
-
-
-
-
 
 
             </div>
@@ -205,6 +197,7 @@ const SubmissionForm : React.FC = () => {
 
             <SubmitButton
             buttonIcon={Send}
+            className="cursor-pointer"
 
 
               title="Submit"

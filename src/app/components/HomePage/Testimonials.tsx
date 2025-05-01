@@ -81,7 +81,7 @@ const Testimonials = () => {
           STUDENTS-PARENTS TESTIMONIALS
           </h2>
           <h3 className="font-semibold text-3xl ">
-          What Our Students Say About Us
+          Stories and feedbacks that inspires
           </h3>
         </div>
 

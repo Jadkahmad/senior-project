@@ -1,16 +1,18 @@
-import BecomeTutor from "../components/ui/BecomeTutor";
+import AboutSection from "../components/ui/AboutUs";
 import Footer from "../components/HomePage/Footer";
 import HomeNav from "../components/HomePage/homeNav";
 
-
-const Becometutor = () => {
+const AboutUs = () => {
     return (
       <div className=''>
         <HomeNav/>
-        <BecomeTutor/>
+        <AboutSection/>
         <Footer/>
+
+
+        
       </div>
     )
   }
   
-  export default Becometutor;
+  export default AboutUs;

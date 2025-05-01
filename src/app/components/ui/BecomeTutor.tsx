@@ -1,4 +1,4 @@
-import { Button } from "./ui/button";
+import { Button } from "./button";
 import { CheckCircle, Clock, DollarSign, Users } from "lucide-react";
 import { Check } from "lucide-react";
 import Link from "next/link";

@@ -9,8 +9,8 @@ const NumCounter = () => {
         <div className="flex flex-col items-center justify-center">
           <p className="text-3xl font-semibold">
             <CountUp
-              end={872}
-              duration={3}
+              end={28}
+              duration={5}
               enableScrollSpy={true}
               scrollSpyOnce={true}
             />
@@ -20,7 +20,7 @@ const NumCounter = () => {
         <div className="flex flex-col items-center justify-center">
           <p className="text-3xl font-semibold">
             <CountUp
-              end={20000}
+              end={2000}
               separator=","
               suffix="+"
               duration={5}
@@ -28,24 +28,24 @@ const NumCounter = () => {
               scrollSpyOnce={true}
             />
           </p>
-          <p>Hours content</p>
+          <p>Successful Sessions</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <p className="text-3xl font-semibold">
             {" "}
             <CountUp
-              end={298}
+              end={150}
               duration={5}
               enableScrollSpy={true}
               scrollSpyOnce={true}
             />{" "}
           </p>
-          <p>Subject and courses</p>
+          <p>Subjects Covered</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <p className="text-3xl font-semibold">
             <CountUp
-              end={72878}
+              end={220}
               separator=","
               suffix="+"
               duration={5}

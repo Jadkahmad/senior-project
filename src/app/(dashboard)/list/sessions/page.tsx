@@ -14,7 +14,8 @@ type Session = {
   tutorName: string;
   courseName: string;
   date: string;
-  time: string;
+  startTime: string;
+  endTime: string;
   status: string;
 };
 
@@ -25,7 +26,8 @@ const sessionsData: Session[] = [
     tutorName: "Sara Khaled",
     courseName: "Mathematics",
     date: "2025-03-25",
-    time: "10:00 AM",
+    startTime: "10:00 AM",
+    endTime: "11:00 AM",
     status: "Completed",
   },
   {
@@ -34,7 +36,8 @@ const sessionsData: Session[] = [
     tutorName: "Omar Hussein",
     courseName: "Physics",
     date: "2025-03-27",
-    time: "2:00 PM",
+    startTime: "2:00 PM",
+    endTime: "4:00 PM",
     status: "Pending",
   },
   {
@@ -43,7 +46,8 @@ const sessionsData: Session[] = [
     tutorName: "Lina Tarek",
     courseName: "Chemistry",
     date: "2025-03-30",
-    time: "4:30 PM",
+    startTime: "4:30 PM",
+    endTime: "4:30 PM",
     status: "Cancelled",
   },
 ];
@@ -70,7 +74,8 @@ const columns = [
   { header: "Tutor", accessor: "tutorName" },
   { header: "Course", accessor: "courseName", className: "hidden md:table-cell" },
   { header: "Date", accessor: "date", className: "hidden md:table-cell" },
-  { header: "Time", accessor: "time", className: "hidden md:table-cell" },
+  { header: "StartTime", accessor: "startTime", className: "hidden md:table-cell" },
+  { header: "EndTime", accessor: "Endtime", className: "hidden md:table-cell" },
   { header: "Status", accessor: "status" },
   { header: "Actions", accessor: "action" },
 ];
@@ -87,7 +92,8 @@ const SessionListPage = () => {
       <td>{session.tutorName}</td>
       <td className="hidden md:table-cell">{session.courseName}</td>
       <td className="hidden md:table-cell">{session.date}</td>
-      <td className="hidden md:table-cell">{session.time}</td>
+      <td className="hidden md:table-cell">{session.startTime}</td>
+      <td className="hidden md:table-cell">{session.endTime}</td>
       <td className={getStatusColor(session.status)}>{session.status}</td>
       <td>
         <div className="flex items-center gap-2">

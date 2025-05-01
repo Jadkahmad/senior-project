@@ -48,6 +48,12 @@ const menuItems = [
         label: "Application",
         href: "/list/application",
       },
+      {
+        icon: "/exam.png",
+        label: "Book a session",
+        href: "/list/booking",
+      },
+      
     ],
   },
   {

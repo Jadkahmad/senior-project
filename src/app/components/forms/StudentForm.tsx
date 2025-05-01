@@ -8,11 +8,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Router } from "lucide-react";
 import { useRouter } from "next/navigation";
-const mockParents = [
-  { id: 1, name: "John Doe" },
-  { id: 2, name: "Sarah Smith" },
-  { id: 3, name: "Michael Johnson" },
-]
+
 
 const schema = z.object({
   id: z

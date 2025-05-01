@@ -22,8 +22,8 @@ export const NavbarItem: NavbarMenu[] = [
   },
   {
     id: 2,
-    title: "For Students",
-    link: "#",
+    title: "Our Team",
+    link: "/our-team",
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ export const NavbarItem: NavbarMenu[] = [
   {
     id: 4,
     title: "About us",
-    link: "#",
+    link: "/about-us",
   },
   {
     id: 5,
