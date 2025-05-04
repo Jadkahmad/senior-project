@@ -28,7 +28,7 @@ const ParentForm = dynamic(() => import("./forms/ParentForm"), {
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element
 } = {
-  tutor: (type, data) => <TeacherForm type={type} data={data} />,
+  teacher: (type, data) => <TeacherForm type={type} data={data} />,
   student: (type, data) => <StudentForm type={type} data={data} />,
   parent: (type, data) => <ParentForm type={type} data={data} />,
   session: (type, data) => <SessionForm type={type} data={data} />,
@@ -44,7 +44,7 @@ const FormModal = ({
   id,
 }: {
   table:
-    | "tutor"
+    | "teacher"
     | "student"
     | "parent"
     
