@@ -105,6 +105,7 @@ const SessionForm = ({
         />
         <InputField
           label="Start Time"
+          type="time"
           name="startTime"
           defaultValue={data?.startTime}
           register={register}
@@ -112,13 +113,14 @@ const SessionForm = ({
         />
         <InputField
           label="End Time"
+          type="time"
           name="endTime"
           defaultValue={data?.endTime}
           register={register}
           error={errors.endTime}
         />
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

@@ -1,5 +1,6 @@
 "use client";
 
+
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { JSX, SetStateAction, useState } from "react";
@@ -27,7 +28,7 @@ const ParentForm = dynamic(() => import("./forms/ParentForm"), {
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element
 } = {
-  teacher: (type, data) => <TeacherForm type={type} data={data} />,
+  tutor: (type, data) => <TeacherForm type={type} data={data} />,
   student: (type, data) => <StudentForm type={type} data={data} />,
   parent: (type, data) => <ParentForm type={type} data={data} />,
   session: (type, data) => <SessionForm type={type} data={data} />,
@@ -43,7 +44,7 @@ const FormModal = ({
   id,
 }: {
   table:
-    | "teacher"
+    | "tutor"
     | "student"
     | "parent"
     
