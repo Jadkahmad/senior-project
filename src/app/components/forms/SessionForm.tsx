@@ -12,6 +12,7 @@ const schema = z.object({
   date: z.string().min(1, { message: "Date is required!" }),
   startTime: z.string().min(1, { message: "Start time is required!" }),
   endTime: z.string().min(1, { message: "End time is required!" }),
+  sessionType: z.string().min(1, { message: "Session Type is required!" }),
 });
 
 type SessionInputs = z.infer<typeof schema>;
@@ -95,6 +96,23 @@ const SessionForm = ({
             </p>
           )}
         </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Session Type</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("tutorName")}
+            defaultValue={data?.sessionType}
+          >
+            <option value="">Select session Type</option>
+            <option value="Group">Group</option>
+            <option value="Private">Private</option>
+          </select>
+          {errors.sessionType?.message && (
+            <p className="text-xs text-red-400">
+              {errors.sessionType.message.toString()}
+            </p>
+          )}
+        </div>
         <InputField
           label="Date"
           name="date"
@@ -105,6 +123,7 @@ const SessionForm = ({
         />
         <InputField
           label="Start Time"
+          type="time"
           name="startTime"
           defaultValue={data?.startTime}
           register={register}
@@ -112,13 +131,14 @@ const SessionForm = ({
         />
         <InputField
           label="End Time"
+          type="time"
           name="endTime"
           defaultValue={data?.endTime}
           register={register}
           error={errors.endTime}
         />
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>

@@ -1,16 +1,16 @@
-"use client"
-
+"use client";
 
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
+import FormModal from "@/app/components/FormModel";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type Application = {
   id: number;
-  userType: string;
+  userType: "parent" | "student" | "tutor"; // Restrict user types
   fullname: string;
   email: string;
   phone: string;
@@ -32,6 +32,9 @@ const columns = [
 const ApplicationListPage = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
     const fetchApplications = async () => {
       try {
@@ -47,9 +50,8 @@ const ApplicationListPage = () => {
           address: item.Address,
           status: item.Status || "pending",
         }));
-  
+
         setApplications(formatted);
-  
       } catch (error) {
         console.error("Error loading applications:", error);
       } finally {
@@ -66,6 +68,15 @@ const ApplicationListPage = () => {
         app.id === id ? { ...app, status: newStatus } : app
       )
     );
+
+    // Open modal if approved
+    if (newStatus === "approved") {
+      const selectedApp = applications.find((app) => app.id === id);
+      if (selectedApp) {
+        setSelectedApplication(selectedApp);
+        setIsModalOpen(true);
+      }
+    }
   };
 
   const renderRow = (item: Application) => (
@@ -119,8 +130,14 @@ const ApplicationListPage = () => {
       </div>
       <Table columns={columns} renderRow={renderRow} data={applications} />
       <Pagination />
+
+      {/* Open FormModal when an application is approved */}
+      {isModalOpen && selectedApplication?.userType && (
+        <FormModal table={selectedApplication.userType} type="create" data={selectedApplication} />
+      )}
     </div>
   );
 };
 
 export default ApplicationListPage;
+

@@ -20,7 +20,7 @@ const schema = z.object({
   lastName: z.string().min(1, { message: "Last name is required!" }),
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
- 
+  experienceYears: z.string().min(1, { message: "Address is required!" }),
   subjectspecs: z.string().min(1,{ message: "subject is required!" }),
   gender: z.enum(["male", "female"], { message: "Sex is required!" }),
   // img: z.instanceof(File).optional(),
@@ -138,6 +138,14 @@ const TeacherForm = ({
           defaultValue={data?.address}
           register={register}
           error={errors.address}
+        />
+
+        <InputField
+          label="Experience Years"
+          name="experience years"
+          defaultValue={data?.experienceYears}
+          register={register}
+          error={errors.experienceYears}
         />
         
         <InputField
