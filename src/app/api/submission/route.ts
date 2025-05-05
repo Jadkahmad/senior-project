@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import {Resend} from 'resend';
+import nodemailer from 'nodemailer';
 import {createConnection} from '@/app/lib/db';
 const db = await createConnection();
 export async function POST(req: Request){
@@ -28,12 +28,21 @@ export async function POST(req: Request){
       "Pending"
       ]
     );
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: 'jadahmad1922@gmail.com',
-        subject: fullname + ' submission',
-        html: `
+   const transporter = nodemailer.createTransport({
+           service: 'gmail', // Can be 'outlook', 'yahoo', etc.
+           auth: {
+             user: "nancyrazzak5@gmail.com",
+             pass: "hraq vnbo fvox sgya"
+   
+           },
+         });
+         
+    
+    await transporter.sendMail({
+      from: '"Admin" <admin@institute.com>',
+      to: 'hadi_slim@hotmail.com',
+      subject: `${fullname} submission`,
+      html: `
         <h2>New Submission Received</h2>
         <p><strong>Full Name:</strong> ${fullname}</p>
         <p><strong>Email:</strong> ${email}</p>
@@ -42,7 +51,7 @@ export async function POST(req: Request){
         <p><strong>Program:</strong> ${program || 'N/A'}</p>
         <p><strong>Address:</strong> ${address || 'N/A'}</p>
         <p><strong>Notes:</strong> ${notes || 'None'}</p>
-      `
+      `,
     });
     return NextResponse.json({ message: 'Saved and email sent!' }, { status: 201 });    
 

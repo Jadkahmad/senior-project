@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
 import {createConnection} from '@/app/lib/db';
 import bcrypt from 'bcryptjs';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 const db = await createConnection();
 export async function POST(req: Request){
@@ -33,16 +33,24 @@ export async function POST(req: Request){
           userid
         ]
       );
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      resend.emails.send({
-          from: 'onboarding@resend.dev',
-          to: email,
-          subject: firstName + " " + lastName + ' account created',
-          html: `
+      const transporter = nodemailer.createTransport({
+        service: 'gmail', // Can be 'outlook', 'yahoo', etc.
+        auth: {
+          user: "nancyrazzak5@gmail.com",
+          pass: "hraq vnbo fvox sgya"
+
+        },
+      });
+      
+      await transporter.sendMail({
+        from: '"Admin" <admin@institute.com>', 
+        to: email,
+        subject: `${firstName} ${lastName} account created`,
+        html: `
           <h2>Your account has been created</h2>
           <p><strong>ID:</strong> ${userid}</p>
           <p><strong>Password:</strong> ${password}</p>
-        `
+        `,
       });
       return NextResponse.json({ message: 'Parent created!' }, { status: 201 });
 }
