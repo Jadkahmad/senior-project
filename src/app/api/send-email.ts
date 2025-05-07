@@ -21,14 +21,14 @@ export default async function handler(
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.mailtrap.io',
-    port: 587,
-    auth: {
-      user: process.env.MAILTRAP_USER!,
-      pass: process.env.MAILTRAP_PASS!,
-    },
-  });
+ const transporter = nodemailer.createTransport({
+           service: 'gmail', 
+           auth: {
+             user: process.env.SMTP_USER,
+             pass: process.env.SMTP_PASS
+   
+           },
+         });
 
   try {
     await transporter.sendMail({

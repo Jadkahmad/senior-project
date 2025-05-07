@@ -7,6 +7,7 @@ import { JSX, SetStateAction, useState } from "react";
 import SessionForm from "./forms/SessionForm";
 import CourseForm from "./forms/CourseForm";
 import PaymentForm from "./forms/PaymentForm";
+import { useRouter } from "next/navigation";
 
 
 
@@ -71,21 +72,62 @@ const FormModal = ({
   const [open, setOpen] = useState(false);
 
   const Form = () => {
-    return type === "delete" && id ? (
-      <form action="" className="p-4 flex flex-col gap-4">
-        <span className="text-center font-medium">
-          All data will be lost. Are you sure you want to delete this {table}?
-        </span>
-        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
-          Delete
-        </button>
-      </form>
-    ) : type === "create" || type === "update"  ? (
-      forms[table](type, data)
-    ) : (
-      "Form not found!"
-    );
+    if (type === "delete" && id) {
+      const handleDelete = async () => {
+        try {
+          const endpoint =
+        table === "session" ? "/api/session" : "/api/courses";
+          const res = await fetch(endpoint, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id }),
+          });
+
+          const result = await res.json();
+  
+          if (!res.ok) {
+            alert(result.error || "Deletion failed");
+            return;
+          }
+  
+          setOpen(false); 
+          window.location.reload();
+        } catch (error) {
+          console.error("Delete error:", error);
+          alert(error);
+        }
+      };
+  
+      return (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleDelete();
+          }}
+          className="p-4 flex flex-col gap-4"
+        >
+          <span className="text-center font-medium">
+            All data will be lost. Are you sure you want to delete this {table}?
+          </span>
+          <button
+            type="submit"
+            className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center"
+          >
+            Delete
+          </button>
+        </form>
+      );
+    }
+  
+    if (type === "create" || type === "update") {
+      return forms[table]?.(type, data) || "Form not found!";
+    }
+  
+    return "Form not found!";
   };
+  
 
   return (
     <>

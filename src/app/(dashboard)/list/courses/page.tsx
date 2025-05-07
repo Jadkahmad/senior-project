@@ -1,3 +1,4 @@
+"use client";
 import FormModal from "@/app/components/FormModel";
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
@@ -5,11 +6,12 @@ import TableSearch from "@/app/components/dashboard/TableSearch";
 import { role, subjectsData } from "@/app/lib/data";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Course = {
   id: number;
-  name: string;
-  teachers: string[];
+  Title: string;
+  Description: string;
 };
 
 const columns = [
@@ -18,8 +20,8 @@ const columns = [
     accessor: "name",
   },
   {
-    header: "Teachers",
-    accessor: "teachers",
+    header: "Description",
+    accessor: "description",
     className: "hidden md:table-cell",
   },
   {
@@ -27,15 +29,32 @@ const columns = [
     accessor: "action",
   },
 ];
-
 const CourseListPage = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await fetch("/api/courses");
+        const data = await res.json();
+        setCourses(data);
+      } catch (err) {
+        console.error("Failed to fetch courses:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
   const renderRow = (item: Course) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center gap-4 p-4">{item.name}</td>
-      <td className="hidden md:table-cell">{item.teachers.join(",")}</td>
+      <td className="flex items-center gap-4 p-4">{item.Title}</td>
+      <td className="hidden md:table-cell">{item.Description}</td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" && (
@@ -67,8 +86,14 @@ const CourseListPage = () => {
           </div>
         </div>
       </div>
+
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={subjectsData} />
+      {loading ? (
+        <p className="p-4 text-gray-400">Loading courses...</p>
+      ) : (
+        <Table columns={columns} renderRow={renderRow} data={courses} />
+      )}
+
       {/* PAGINATION */}
       <Pagination />
     </div>

@@ -29,10 +29,10 @@ export async function POST(req: Request){
       ]
     );
    const transporter = nodemailer.createTransport({
-           service: 'gmail', // Can be 'outlook', 'yahoo', etc.
+           service: 'gmail', 
            auth: {
-             user: "nancyrazzak5@gmail.com",
-             pass: "hraq vnbo fvox sgya"
+             user: process.env.SMTP_USER,
+             pass: process.env.SMTP_PASS
    
            },
          });
@@ -40,7 +40,7 @@ export async function POST(req: Request){
     
     await transporter.sendMail({
       from: '"Admin" <admin@institute.com>',
-      to: 'hadi_slim@hotmail.com',
+      to: process.env.ADMIN_EMAIL,
       subject: `${fullname} submission`,
       html: `
         <h2>New Submission Received</h2>

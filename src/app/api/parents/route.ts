@@ -33,14 +33,14 @@ export async function POST(req: Request){
           userid
         ]
       );
-      const transporter = nodemailer.createTransport({
-        service: 'gmail', // Can be 'outlook', 'yahoo', etc.
-        auth: {
-          user: "nancyrazzak5@gmail.com",
-          pass: "hraq vnbo fvox sgya"
-
-        },
-      });
+   const transporter = nodemailer.createTransport({
+             service: 'gmail', 
+             auth: {
+               user: process.env.SMTP_USER,
+               pass: process.env.SMTP_PASS
+     
+             },
+           });
       
       await transporter.sendMail({
         from: '"Admin" <admin@institute.com>', 

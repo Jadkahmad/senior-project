@@ -1,13 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import FormModal from "@/app/components/FormModel";
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
-import { role, classesData } from "@/app/lib/data";
 import Image from "next/image";
 
-// Dummy data for testing
 type Session = {
   id: number;
   studentName: string;
@@ -19,40 +18,17 @@ type Session = {
   status: string;
 };
 
-const sessionsData: Session[] = [
-  {
-    id: 1,
-    studentName: "Ali Ahmad",
-    tutorName: "Sara Khaled",
-    courseName: "Mathematics",
-    date: "2025-03-25",
-    startTime: "10:00 AM",
-    endTime: "11:00 AM",
-    status: "Completed",
-  },
-  {
-    id: 2,
-    studentName: "Maya Nasser",
-    tutorName: "Omar Hussein",
-    courseName: "Physics",
-    date: "2025-03-27",
-    startTime: "2:00 PM",
-    endTime: "4:00 PM",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    studentName: "Hassan Youssef",
-    tutorName: "Lina Tarek",
-    courseName: "Chemistry",
-    date: "2025-03-30",
-    startTime: "4:30 PM",
-    endTime: "4:30 PM",
-    status: "Cancelled",
-  },
+const columns = [
+  { header: "Student", accessor: "studentName" },
+  { header: "Tutor", accessor: "tutorName" },
+  { header: "Course", accessor: "courseName", className: "hidden md:table-cell" },
+  { header: "Date", accessor: "date", className: "hidden md:table-cell" },
+  { header: "StartTime", accessor: "startTime", className: "hidden md:table-cell" },
+  { header: "EndTime", accessor: "Endtime", className: "hidden md:table-cell" },
+  { header: "Status", accessor: "status" },
+  { header: "Actions", accessor: "action" },
 ];
 
-// Map status to color
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case "completed":
@@ -69,19 +45,26 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const columns = [
-  { header: "Student", accessor: "studentName" },
-  { header: "Tutor", accessor: "tutorName" },
-  { header: "Course", accessor: "courseName", className: "hidden md:table-cell" },
-  { header: "Date", accessor: "date", className: "hidden md:table-cell" },
-  { header: "StartTime", accessor: "startTime", className: "hidden md:table-cell" },
-  { header: "EndTime", accessor: "Endtime", className: "hidden md:table-cell" },
-  { header: "Status", accessor: "status" },
-  { header: "Actions", accessor: "action" },
-];
-
 const SessionListPage = () => {
-  const role = "admin"; 
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+  const role = "admin";
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const res = await fetch("/api/session");
+        const data = await res.json();
+        setSessions(data);
+      } catch (err) {
+        console.error("Failed to load sessions", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSessions();
+  }, []);
 
   const renderRow = (session: Session) => (
     <tr
@@ -110,7 +93,7 @@ const SessionListPage = () => {
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* Top Bar */}
+      {/* Top */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">All Sessions</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
@@ -128,7 +111,11 @@ const SessionListPage = () => {
       </div>
 
       {/* Table */}
-      <Table columns={columns} renderRow={renderRow} data={sessionsData} />
+      {loading ? (
+        <p className="text-gray-400 p-4">Loading sessions...</p>
+      ) : (
+        <Table columns={columns} renderRow={renderRow} data={sessions} />
+      )}
 
       {/* Pagination */}
       <Pagination />
