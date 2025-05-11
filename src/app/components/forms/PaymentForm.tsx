@@ -3,10 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useEffect, useState } from "react";
 
 const schema = z.object({
-  studentName: z.string().min(1, { message: "Student name is required!" }),
-  session: z.string().min(1, { message: "Session is required!" }),
+  studentId: z.string().min(1, { message: "Student is required!" }),
+  sessionId: z.string().min(1, { message: "Session is required!" }),
   paymentType: z.string().min(1, { message: "Payment type is required!" }),
   amount: z.string().min(1, { message: "Amount is required!" }),
   date: z.string().min(1, { message: "Date is required!" }),
@@ -24,116 +25,169 @@ const PaymentForm = ({
   const {
     register,
     handleSubmit,
+    reset,
+    watch,
     formState: { errors },
   } = useForm<PaymentInputs>({
     resolver: zodResolver(schema),
   });
+const selectedStudentId = watch("studentId");
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-  });
+  const [students, setStudents] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
+
+
+useEffect(() => {
+  const loadDropdowns = async () => {
+    try {
+      const studentsRes = await fetch("/api/students");
+      const studentsData = await studentsRes.json();
+      setStudents(studentsData);
+
+      let selectedStudentId = "";
+      if (type === "update" && data?.studentName) {
+  
+        const matchStudent = studentsData.find(
+          (s: any) => `${s.First_name} ${s.Last_name}` === data.studentName
+        );
+        if (matchStudent) {
+          selectedStudentId = matchStudent.id.toString();
+          const sessionsRes = await fetch(`/api/studentSession?studentId=${selectedStudentId}`);
+          const sessionsData = await sessionsRes.json();
+          setSessions(sessionsData);
+
+          const matchSession = sessionsData.find(
+            (s: any) =>
+              `${s.courseName} - ${s.tutorName} (${s.date})` === data.sessionName
+          );
+
+          reset({
+            studentId: selectedStudentId,
+            sessionId: matchSession?.id.toString() || "",
+            paymentType: data.method || "",
+            amount: data.Amount || "",
+            date: data.date || "",
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Dropdown loading failed:", err);
+    }
+  };
+
+  loadDropdowns();
+}, [type, data, reset]);
+
+useEffect(() => {
+  
+  if (!selectedStudentId) return;
+  fetch(`/api/studentSession?studentId=${selectedStudentId}`)
+    .then((res) => res.json())
+    .then(setSessions)
+    .catch(console.error);
+}, [selectedStudentId]);
+
+
+  const onSubmit = handleSubmit(async (formData) => {
+  const payload = {
+    id: data?.id, // include ID for update
+    studentId: parseInt(formData.studentId),
+    sessionId: parseInt(formData.sessionId),
+    paymentType: formData.paymentType,
+    amount: formData.amount,
+    date: formData.date,
+  };
+
+  try {
+    const res = await fetch("/api/payment", {
+      method: type === "create" ? "POST" : "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const result = await res.json();
+      throw new Error(result.error || "Failed to save payment");
+    }
+
+    window.location.reload();
+  } catch (err) {
+    console.error("Save payment failed:", err);
+    alert("Failed to save payment.");
+  }
+});
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Create a new payment" : "Update the payment"}
       </h1>
-      <span className="text-xs text-gray-400 font-medium">
-        Payment Information
-      </span>
-      <div className="flex justify-between flex-wrap gap-4">
-        {/* Student Name */}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Student Name</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("studentName")}
-            defaultValue={data?.studentName}
-          >
+      <span className="text-xs text-gray-400 font-medium">Payment Information</span>
+      <div className="flex flex-wrap gap-4">
+        {/* Student Dropdown */}
+        <div className="flex flex-col w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Student</label>
+          <select {...register("studentId")} className="p-2 rounded-md text-sm ring-[1.5px] ring-gray-300">
             <option value="">Select a student</option>
-            <option value="Ali Ahmad">Ali Ahmad</option>
-            <option value="Maya Nasser">Maya Nasser</option>
-            <option value="Hassan Youssef">Hassan Youssef</option>
+            {students.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.First_name} {s.Last_name}
+              </option>
+            ))}
           </select>
-          {errors.studentName?.message && (
-            <p className="text-xs text-red-400">
-              {errors.studentName.message.toString()}
-            </p>
-          )}
+          {errors.studentId && <p className="text-xs text-red-400">{errors.studentId.message}</p>}
         </div>
-        {/* Session */}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+
+        {/* Session Dropdown */}
+        <div className="flex flex-col w-full md:w-1/4">
           <label className="text-xs text-gray-500">Session</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("session")}
-            defaultValue={data?.session}
-          >
+          <select {...register("sessionId")} className="p-2 rounded-md text-sm ring-[1.5px] ring-gray-300">
             <option value="">Select a session</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Math - Grade 10">Math </option>
-            <option value="Physics - Grade 11">Physics</option>
-            <option value="Chemistry - Grade 12">Chemistry</option>
+            {sessions.map((s) => (
+              <option key={s.id} value={s.id}>
+                {`${s.courseName} - ${s.tutorName} (${s.date})`}
+              </option>
+            ))}
           </select>
-          {errors.session?.message && (
-            <p className="text-xs text-red-400">
-              {errors.session.message.toString()}
-            </p>
-          )}
+          {errors.sessionId && <p className="text-xs text-red-400">{errors.sessionId.message}</p>}
         </div>
+
         {/* Payment Type */}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col w-full md:w-1/4">
           <label className="text-xs text-gray-500">Payment Type</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("paymentType")}
-            defaultValue={data?.paymentType}
-          >
+          <select {...register("paymentType")} className="p-2 rounded-md text-sm ring-[1.5px] ring-gray-300">
             <option value="">Select payment type</option>
             <option value="cash">Cash</option>
             <option value="omt">OMT</option>
             <option value="whish">Whish</option>
           </select>
-          {errors.paymentType?.message && (
-            <p className="text-xs text-red-400">
-              {errors.paymentType.message.toString()}
-            </p>
-          )}
+          {errors.paymentType && <p className="text-xs text-red-400">{errors.paymentType.message}</p>}
         </div>
+
         {/* Amount */}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col w-full md:w-1/4">
           <label className="text-xs text-gray-500">Amount</label>
           <input
             type="text"
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("amount")}
-            defaultValue={data?.amount}
+            className="p-2 rounded-md text-sm ring-[1.5px] ring-gray-300"
           />
-          {errors.amount?.message && (
-            <p className="text-xs text-red-400">
-              {errors.amount.message.toString()}
-            </p>
-          )}
+          {errors.amount && <p className="text-xs text-red-400">{errors.amount.message}</p>}
         </div>
+
         {/* Date */}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col w-full md:w-1/4">
           <label className="text-xs text-gray-500">Date</label>
           <input
             type="date"
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("date")}
-            defaultValue={data?.date}
+            className="p-2 rounded-md text-sm ring-[1.5px] ring-gray-300"
           />
-          {errors.date?.message && (
-            <p className="text-xs text-red-400">
-              {errors.date.message.toString()}
-            </p>
-          )}
+          {errors.date && <p className="text-xs text-red-400">{errors.date.message}</p>}
         </div>
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Create" : "Update"}
-      </button>
+
+      <button className="bg-blue-400 text-white p-2 rounded-md">{type === "create" ? "Create" : "Update"}</button>
     </form>
   );
 };

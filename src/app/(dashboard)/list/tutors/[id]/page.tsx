@@ -1,167 +1,159 @@
-import Announcements from "@/app/components/dashboard/Announcemens";
-import BigCalendar from "@/app/components/dashboard/BigCalendar";
-import FormModal from "@/app/components/FormModel";
+"use client";
 
-import { role } from "@/app/lib/data";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
+import FormModal from "@/app/components/FormModel";
+import BigCalendar from "@/app/components/dashboard/BigCalendar";
+import Announcements from "@/app/components/dashboard/Announcemens";
 import Link from "next/link";
+import { role } from "@/app/lib/data";
 
 const SingleTeacherPage = () => {
-    return (
-      <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
-        {/* LEFT */}
-        <div className="w-full xl:w-2/3">
-          {/* TOP */}
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* USER INFO CARD */}
-            <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
-              <div className="w-1/3">
-                <Image
-                  src="https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                  alt=""
-                  width={144}
-                  height={144}
-                  className="w-36 h-36 rounded-full object-cover"
-                />
-              </div>
-              <div className="w-2/3 flex flex-col justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <h1 className="text-xl font-semibold">Leonard Snyder</h1>
-                  {role === "admin" && <FormModal
-                    table="teacher"
-                    type="update"
-                    data={{
-                      id: 1,
-                      username: "deanguerrero",
-                      email: "deanguerrero@gmail.com",
-                      password: "password",
-                      firstName: "Dean",
-                      lastName: "Guerrero",
-                      phone: "+1 234 567 89",
-                      address: "1234 Main St, Anytown, USA",
-                      bloodType: "A+",
-                      dateOfBirth: "2000-01-01",
-                      sex: "male",
-                      img: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200",
-                    }}
-                  />}
-                </div>
-                <p className="text-sm text-gray-500">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                </p>
-                <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
-                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/blood.png" alt="" width={14} height={14} />
-                    <span>A+</span>
-                  </div>
-                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/date.png" alt="" width={14} height={14} />
-                    <span>January 2025</span>
-                  </div>
-                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/mail.png" alt="" width={14} height={14} />
-                    <span>user@gmail.com</span>
-                  </div>
-                  <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
-                    <Image src="/phone.png" alt="" width={14} height={14} />
-                    <span>+1 234 567</span>
-                  </div>
-                </div>
-              </div>
+  const { id } = useParams();
+  const [tutor, setTutor] = useState<any>(null);
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchData = async () => {
+      try {
+        const tutorRes = await fetch(`/api/tutors/${id}`);
+        if (!tutorRes.ok) throw new Error("Failed to fetch tutor");
+        const tutorData = await tutorRes.json();
+        console.log(tutorData);
+        setTutor(tutorData);
+
+        const sessionsRes = await fetch(`${window.location.origin}/api/tutorSession/${id}`);
+        if (!sessionsRes.ok) throw new Error("Failed to fetch sessions");
+        const sessionsData = await sessionsRes.json();
+        console.log(sessionsData);
+        const formattedEvents = sessionsData.map((session: any) => {
+  const date = new Date(session.Date);
+  const [startHour, startMinute] = session.Start_time.split(":");
+  const [endHour, endMinute] = session.End_time.split(":");
+
+  const start = new Date(date);
+  start.setHours(parseInt(startHour), parseInt(startMinute));
+
+  const end = new Date(date);
+  end.setHours(parseInt(endHour), parseInt(endMinute));
+
+  return {
+    id: session.id,
+    title: `${session.courseName} (${session.studentFirstName} ${session.studentLastName})`,
+    start,
+    end,
+  };
+});
+
+        console.log(formattedEvents);
+        setEvents(formattedEvents);
+      } catch (err) {
+        console.error("Error loading tutor or sessions:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (loading) return <p className="p-4">Loading tutor info...</p>;
+  if (!tutor) return <p className="p-4 text-red-500">Tutor not found.</p>;
+
+  return (
+    <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
+      {/* LEFT SIDE */}
+      <div className="w-full xl:w-2/3">
+        {/* TOP INFO */}
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* USER INFO CARD */}
+          <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
+            <div className="w-1/3">
+              <Image
+                src="https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                alt="Profile"
+                width={144}
+                height={144}
+                className="w-36 h-36 rounded-full object-cover"
+              />
             </div>
-            {/* SMALL CARDS */}
-            <div className="flex-1 flex gap-4 justify-between flex-wrap">
-              {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/singleAttendance.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
-                <div className="">
-                  <h1 className="text-xl font-semibold">90%</h1>
-                  <span className="text-sm text-gray-400">Attendance</span>
-                </div>
+            <div className="w-2/3 flex flex-col justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <h1 className="text-xl font-semibold">{tutor.fullName}</h1>
+                {role === "admin" && (
+                  <FormModal table="teacher" type="update" data={tutor} />
+                )}
               </div>
-              {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/singleBranch.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
-                <div className="">
-                  <h1 className="text-xl font-semibold">2</h1>
-                  <span className="text-sm text-gray-400">Branches</span>
+              <p className="text-sm text-gray-500">
+                {tutor.subjectspecs || "No subject specified."}
+              </p>
+              <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
+                <div className="flex items-center gap-2 w-full md:w-1/2">
+                  <Image src="/mail.png" alt="" width={14} height={14} />
+                  <span>{tutor.email}</span>
                 </div>
-              </div>
-              {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/singleLesson.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
-                <div className="">
-                  <h1 className="text-xl font-semibold">6</h1>
-                  <span className="text-sm text-gray-400">Lessons</span>
+                <div className="flex items-center gap-2 w-full md:w-1/2">
+                  <Image src="/phone.png" alt="" width={14} height={14} />
+                  <span>{tutor.phone}</span>
                 </div>
-              </div>
-              {/* CARD */}
-              <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
-                <Image
-                  src="/singleClass.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
-                <div className="">
-                  <h1 className="text-xl font-semibold">6</h1>
-                  <span className="text-sm text-gray-400">Classes</span>
+                <div className="flex items-center gap-2 w-full md:w-1/2">
+                  <Image src="/location.png" alt="" width={14} height={14} />
+                  <span>{tutor.address}</span>
+                </div>
+                <div className="flex items-center gap-2 w-full md:w-1/2">
+                  <Image src="/gender.png" alt="" width={14} height={14} />
+                  <span className="capitalize">{tutor.gender}</span>
                 </div>
               </div>
             </div>
           </div>
-          {/* BOTTOM */}
-          <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
-            <h1>Teacher&apos;s Schedule</h1>
-            <BigCalendar />
+
+          {/* STATS CARDS */}
+          <div className="flex-1 flex flex-wrap gap-4">
+            <div className="bg-white p-4 rounded-md w-full md:w-[48%]">
+              <h2 className="text-lg font-semibold">Experience</h2>
+              <p className="text-sm text-gray-600">
+                {tutor.experienceYears} years
+              </p>
+            </div>
+            <div className="bg-white p-4 rounded-md w-full md:w-[48%]">
+              <h2 className="text-lg font-semibold">Subjects</h2>
+              <p className="text-sm text-gray-600">{tutor.subjectspecs}</p>
+            </div>
           </div>
         </div>
-        {/* RIGHT */}
-        <div className="w-full xl:w-1/3 flex flex-col gap-4">
-          <div className="bg-white p-4 rounded-md">
-            <h1 className="text-xl font-semibold">Shortcuts</h1>
-            <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-              <Link className="p-3 rounded-md bg-lamaSkyLight" href="/">
-                Teacher&apos;s Classes
-              </Link>
-              <Link className="p-3 rounded-md bg-lamaPurpleLight" href="/">
-                Teacher&apos;s Students
-              </Link>
-              <Link className="p-3 rounded-md bg-lamaYellowLight" href="/">
-                Teacher&apos;s Lessons
-              </Link>
-              <Link className="p-3 rounded-md bg-pink-50" href="/">
-                Teacher&apos;s Exams
-              </Link>
-              <Link className="p-3 rounded-md bg-lamaSkyLight" href="/">
-                Teacher&apos;s Assignments
-              </Link>
-            </div>
-          </div>
-          
-          <Announcements />
+
+        {/* CALENDAR */}
+        <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
+          <h1>Teacher&apos;s Schedule</h1>
+          <BigCalendar events={events} />
         </div>
       </div>
-    );
-  };
-  
-  export default SingleTeacherPage;
+
+      {/* RIGHT SIDE */}
+      <div className="w-full xl:w-1/3 flex flex-col gap-4">
+        <div className="bg-white p-4 rounded-md">
+          <h1 className="text-xl font-semibold">Shortcuts</h1>
+          <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
+            <Link className="p-3 rounded-md bg-lamaSkyLight" href="/">
+              Classes
+            </Link>
+            <Link className="p-3 rounded-md bg-lamaPurpleLight" href="/">
+              Students
+            </Link>
+            <Link className="p-3 rounded-md bg-lamaYellowLight" href="/">
+              Lessons
+            </Link>
+          </div>
+        </div>
+        <Announcements />
+      </div>
+    </div>
+  );
+};
+
+export default SingleTeacherPage;

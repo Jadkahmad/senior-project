@@ -1,9 +1,9 @@
-"use client"; 
+"use client";
 import FormModal from "@/app/components/FormModel";
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
-import { role, studentsData } from "@/app/lib/data";
+import { role } from "@/app/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -15,88 +15,58 @@ type Student = {
   email?: string;
   photo: string;
   phone?: string;
-  regtype?:string;
+  regtype?: string;
   class: string;
   address: string;
-  dateOfAdmission:string;
-  parentId:string;
+  dateOfAdmission: string;
+  parentId: string;
 };
 
 const columns = [
-  {
-    header: "Info",
-    accessor: "info",
-  },
-  {
-    header: "Student ID",
-    accessor: "studentId",
-    className: "hidden md:table-cell",
-  },
-
-  {
-    header: "RegType",
-    accessor: "RegistrationType",
-    className: "hidden lg:table-cell",
-  },
-
-
-  {
-    header: "ParentId",
-    accessor: "parentId",
-    className: "hidden md:table-cell",
-  },
-
-  {
-    header: "Address",
-    accessor: "address",
-    className: "hidden lg:table-cell",
-  },
-  
-  {
-    header: "Date of admission",
-    accessor: "date of admission",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  { header: "Info", accessor: "info" },
+  { header: "Student ID", accessor: "studentId", className: "hidden md:table-cell" },
+  { header: "RegType", accessor: "regtype", className: "hidden lg:table-cell" },
+  { header: "Parent ID", accessor: "parentId", className: "hidden md:table-cell" }, // ✅ FIXED
+  { header: "Address", accessor: "address", className: "hidden lg:table-cell" },
+  { header: "Date of Admission", accessor: "dateOfAdmission", className: "hidden lg:table-cell" },
+  { header: "Actions", accessor: "action" },
 ];
 
 const StudentListPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
-const [loading, setLoading] = useState(true);
-useEffect(() => {
-  const fetchStudents = async () => {
-    try {
-      const res = await fetch("/api/students");
-      if (!res.ok) throw new Error("Failed to fetch students");
-      const data = await res.json();
-      console.log(data);
-      const formatted = data.map((s: any) => ({
-        id: s.id,
-        studentId: s.User_id,
-        name: `${s.First_name} ${s.Last_name}`,
-        email: s.Email,
-        photo: "/student-avatar.png", 
-        phone: s.Phone_number,
-        regtype: s.Registration_type,
-        class: s.Level,
-        address: s.Address,
-        dateOfAdmission: s.Admission_Date,
-        parentId: s.Parent_id
-      }));
+  const [loading, setLoading] = useState(true);
 
-      setStudents(formatted);
-    } catch (error) {
-      console.error("Error fetching students:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const res = await fetch("/api/students");
+        if (!res.ok) throw new Error("Failed to fetch students");
+        const data = await res.json();
 
-  fetchStudents();
-}, []);
+        const formatted = data.map((s: any) => ({
+          id: s.id,
+          studentId: s.User_id,
+          name: `${s.First_name} ${s.Last_name}`,
+          email: s.Email,
+          photo: "/student-avatar.png",
+          phone: s.Phone_number,
+          regtype: s.Registration_type,
+          class: s.Level,
+          address: s.Address,
+          dateOfAdmission: s.Admission_Date,
+          parentId: s.parentUserId ?? "N/A", // show N/A if null
+        }));
+
+        setStudents(formatted);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
 
   const renderRow = (item: Student) => (
     <tr
@@ -105,7 +75,7 @@ useEffect(() => {
     >
       <td className="flex items-center gap-4 p-4">
         <Image
-          src={"/avatar.png"}
+          src={item.photo}
           alt=""
           width={40}
           height={40}
@@ -114,15 +84,13 @@ useEffect(() => {
         <div className="flex flex-col">
           <h3 className="font-semibold">{item.name}</h3>
           <p className="text-xs text-gray-500">{item.class}</p>
-          
         </div>
       </td>
       <td className="hidden md:table-cell">{item.studentId}</td>
       <td className="hidden md:table-cell">{item.regtype}</td>
-      <td className="hidden md:table-cell">{item.phone}</td>
+      <td className="hidden md:table-cell">{item.parentId}</td>
       <td className="hidden md:table-cell">{item.address}</td>
       <td className="hidden md:table-cell">{item.dateOfAdmission}</td>
-      
       <td>
         <div className="flex items-center gap-2">
           <Link href={`/list/students/${item.id}`}>
@@ -131,10 +99,7 @@ useEffect(() => {
             </button>
           </Link>
           {role === "admin" && (
-            // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
-            //   <Image src="/delete.png" alt="" width={16} height={16} />
-            // </button>
-            <FormModal table="student" type="delete" id={item.id}/>
+            <FormModal table="student" type="delete" id={item.id} />
           )}
         </div>
       </td>
@@ -155,17 +120,14 @@ useEffect(() => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-400">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              //   <Image src="/plus.png" alt="" width={14} height={14} />
-              // </button>
-              <FormModal table="student" type="create"/>
-            )}
+            {role === "admin" && <FormModal table="student" type="create" />}
           </div>
         </div>
       </div>
+
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={students} />
+
       {/* PAGINATION */}
       <Pagination />
     </div>

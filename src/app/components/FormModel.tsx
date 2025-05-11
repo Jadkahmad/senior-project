@@ -1,20 +1,11 @@
 "use client";
 
-
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { JSX, SetStateAction, useState } from "react";
+import { JSX, useState } from "react";
 import SessionForm from "./forms/SessionForm";
 import CourseForm from "./forms/CourseForm";
 import PaymentForm from "./forms/PaymentForm";
-import { useRouter } from "next/navigation";
-
-
-
-// USE LAZY LOADING
-
-// import TeacherForm from "./forms/TeacherForm";
-// import StudentForm from "./forms/StudentForm";
 
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => <h1>Loading...</h1>,
@@ -27,7 +18,7 @@ const ParentForm = dynamic(() => import("./forms/ParentForm"), {
 });
 
 const forms: {
-  [key: string]: (type: "create" | "update", data?: any) => JSX.Element
+  [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
 } = {
   teacher: (type, data) => <TeacherForm type={type} data={data} />,
   student: (type, data) => <StudentForm type={type} data={data} />,
@@ -35,7 +26,6 @@ const forms: {
   session: (type, data) => <SessionForm type={type} data={data} />,
   course: (type, data) => <CourseForm type={type} data={data} />,
   payment: (type, data) => <PaymentForm type={type} data={data} />,
-  
 };
 
 const FormModal = ({
@@ -48,16 +38,12 @@ const FormModal = ({
     | "teacher"
     | "student"
     | "parent"
-    
     | "session"
     | "course"
-    
-    
-  
     | "payment"
     | "applications"
     | "announcement";
-  type: "create" | "update" | "delete"| "approve"|"reject";
+  type: "create" | "update" | "delete" | "approve" | "reject";
   data?: any;
   id?: number;
 }) => {
@@ -75,8 +61,21 @@ const FormModal = ({
     if (type === "delete" && id) {
       const handleDelete = async () => {
         try {
-          const endpoint =
-        table === "session" ? "/api/session" : "/api/courses";
+          let endpoint = "";
+          switch (table) {
+            case "session":
+              endpoint = "/api/session";
+              break;
+            case "course":
+              endpoint = "/api/courses";
+              break;
+            case "payment":
+              endpoint = "/api/payment";
+              break;
+            default:
+              return alert("Unknown delete target.");
+          }
+
           const res = await fetch(endpoint, {
             method: "DELETE",
             headers: {
@@ -86,20 +85,20 @@ const FormModal = ({
           });
 
           const result = await res.json();
-  
+
           if (!res.ok) {
             alert(result.error || "Deletion failed");
             return;
           }
-  
-          setOpen(false); 
+
+          setOpen(false);
           window.location.reload();
         } catch (error) {
           console.error("Delete error:", error);
-          alert(error);
+          alert("An error occurred while deleting.");
         }
       };
-  
+
       return (
         <form
           onSubmit={(e) => {
@@ -120,14 +119,13 @@ const FormModal = ({
         </form>
       );
     }
-  
+
     if (type === "create" || type === "update") {
-      return forms[table]?.(type, data) || "Form not found!";
+      return forms[table]?.(type, data) || <p>Form not found!</p>;
     }
-  
-    return "Form not found!";
+
+    return <p>Form not found!</p>;
   };
-  
 
   return (
     <>
@@ -138,14 +136,14 @@ const FormModal = ({
         <Image src={`/${type}.png`} alt="" width={16} height={16} />
       </button>
       {open && (
-        <div className=" bg-black opacity-90 w-screen h-screen absolute left-0 top-0 z-50 flex items-center justify-center">
+        <div className="bg-black opacity-90 w-screen h-screen absolute left-0 top-0 z-50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             <Form />
             <div
               className="absolute top-4 right-4 cursor-pointer"
               onClick={() => setOpen(false)}
             >
-              <Image src="/close.png" alt="" width={14} height={14} />
+              <Image src="/close.png" alt="close" width={14} height={14} />
             </div>
           </div>
         </div>

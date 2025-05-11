@@ -11,10 +11,7 @@ export async function POST(req: Request){
     const password = formData.get('password') as string;
     const firstName = formData.get('firstName') as string;
     const lastName = formData.get('lastName') as string;
-    const email = formData.get('email') as string;
     const userid = formData.get('id') as string;
-    const phone = formData.get('phone') as string;
-    const address = formData.get('address') as string;
     const level = formData.get('level') as string;
     const registerationType = (formData.get('regtype') as string).replace(/-/g, "_");
     const parent = formData.get('parentId');
@@ -49,10 +46,16 @@ export async function POST(req: Request){
           pass: process.env.MAILTRAP_PASS!,
         },
       });
-      
+       const [rows]: any = await db.execute(
+      `SELECT Email FROM parent WHERE id = ?`,
+      [parent]
+    );
+ if (!rows.length) {
+      return NextResponse.json({ error: "Parent not found" }, { status: 404 });
+    }
       await transporter.sendMail({
         from: '"Admin" <admin@institute.com>',
-        to: email,
+        to: rows[0].Email,
         subject: `${firstName} ${lastName} account created`,
         html: `
           <h2>Your account has been created</h2>
@@ -64,7 +67,18 @@ export async function POST(req: Request){
 }
 export async function GET() {
   try {
-    const [rows] = await db.execute('SELECT * FROM student');
+    const db = await createConnection();
+
+    const [rows] = await db.execute(
+      `
+      SELECT 
+        s.*, 
+        p.User_id AS parentUserId
+      FROM student s
+      LEFT JOIN parent p ON s.Parent_id = p.id
+      `
+    );
+
     return NextResponse.json(rows, { status: 200 });
   } catch (error) {
     console.error('Error fetching students:', error);

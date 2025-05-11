@@ -44,38 +44,36 @@ const TeacherForm = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit(async (formData) => {
-    
-    try {
-      const data = new FormData();
-      data.append("id", formData.id);
-      data.append("email", formData.email);
-      data.append("password", formData.password);
-      data.append("firstName", formData.firstName);
-      data.append("lastName", formData.lastName);
-      data.append("phone", formData.phone);
-      data.append("subjectspecs", formData.subjectspecs); // match backend key
-      data.append("gender", formData.gender);
-  
-  
-      const res = await fetch("/api/tutors", {
-        method: "POST",
-        body: data,
-      });
-  
-      if (!res.ok) throw new Error("Failed to create tutor");
-  
-      const result = await res.json();
-      console.log("Tutor created:", result.message);
-  
-   
-  
-    } catch (error) {
-      console.error("Error submitting tutor:", error);
-      alert("Error adding tutor");
+const onSubmit = handleSubmit(async (formData) => {
+  try {
+    const form = new FormData();
+    form.append("id", formData.id);
+    form.append("email", formData.email);
+    form.append("password", formData.password);
+    form.append("firstName", formData.firstName);
+    form.append("lastName", formData.lastName);
+    form.append("phone", formData.phone);
+    form.append("subjectspecs", formData.subjectspecs);
+    form.append("gender", formData.gender);
+    form.append("experienceYears", formData.experienceYears);
+    form.append("address", formData.address);
+     if (type === "update" && data?.id) {
+      form.append("dbId", data.id.toString()); 
     }
-  });
-  
+    const res = await fetch("/api/tutors", {
+      method: type === "create" ? "POST" : "PUT",
+      body: form,
+    });
+
+    if (!res.ok) throw new Error(`Failed to ${type === "create" ? "create" : "update"} tutor`);
+
+    window.location.reload();
+  } catch (error) {
+    console.error(`Error ${type === "create" ? "creating" : "updating"} tutor:`, error);
+    alert(`Error ${type === "create" ? "adding" : "updating"} tutor`);
+  }
+});
+
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
@@ -87,7 +85,7 @@ const TeacherForm = ({
         <InputField
           label="ID"
           name="id"
-          defaultValue={data?.id}
+          defaultValue={data?.userId}
           register={register}
           error={errors?.id}
         />
@@ -114,14 +112,14 @@ const TeacherForm = ({
         <InputField
           label="First Name"
           name="firstName"
-          defaultValue={data?.firstName}
+          defaultValue={data?.fullName?.split(" ")[0] || ""}
           register={register}
           error={errors.firstName}
         />
         <InputField
           label="Last Name"
           name="lastName"
-          defaultValue={data?.lastName}
+          defaultValue={data?.fullName?.split(" ").slice(1).join(" ") || ""} 
           register={register}
           error={errors.lastName}
         />
@@ -140,18 +138,19 @@ const TeacherForm = ({
           error={errors.address}
         />
 
-        <InputField
-          label="Experience Years"
-          name="experience years"
-          defaultValue={data?.experienceYears}
-          register={register}
-          error={errors.experienceYears}
-        />
+       <InputField
+  label="Experience Years"
+  name="experienceYears" 
+  defaultValue={data?.experienceYears}
+  register={register}
+  error={errors.experienceYears}
+/>
+
         
         <InputField
           label="Subject Specification"
           name="subjectspecs"
-          defaultValue={data?.subjectSpecs}
+          defaultValue={data?.subjectspecs}
           register={register}
           error={errors.subjectspecs}
           type="text"

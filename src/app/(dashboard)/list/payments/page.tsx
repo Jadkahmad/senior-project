@@ -1,98 +1,75 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import FormModal from "@/app/components/FormModel";
 import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
-import { role, } from "@/app/lib/data";
 import Image from "next/image";
 
-// Dummy data
 type Payment = {
   id: number;
   studentName: string;
-  sessionName: string;
-  amount: number;
+  sessionName: string;  
+  Amount: number;
   method: string;
   date: string;
-  status: string;
-};
-
-const paymentsData: Payment[] = [
-  {
-    id: 1,
-    studentName: "Ali Ahmad",
-    sessionName: "Math - Grade 10",
-    amount: 40,
-    method: "Cash",
-    date: "2025-03-26",
-    status: "Paid",
-  },
-  {
-    id: 2,
-    studentName: "Maya Nasser",
-    sessionName: "Physics - Grade 11",
-    amount: 50,
-    method: "Card",
-    date: "2025-03-25",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    studentName: "Hassan Youssef",
-    sessionName: "Chemistry - Grade 12",
-    amount: 45,
-    method: "Cash",
-    date: "2025-03-24",
-    status: "Failed",
-  },
-];
-
-// Map status to color
-const getStatusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "paid":
-      return "text-green-600 font-semibold";
-    case "pending":
-      return "text-orange-500 font-semibold";
-    case "failed":
-    case "cancelled":
-      return "text-red-600 font-semibold";
-    default:
-      return "text-gray-600";
-  }
+  Status: string;
 };
 
 const columns = [
   { header: "Student", accessor: "studentName" },
   { header: "Session", accessor: "sessionName", className: "hidden md:table-cell" },
-  { header: "Amount ($)", accessor: "amount", className: "hidden md:table-cell" },
+  { header: "Amount ($)", accessor: "Amount", className: "hidden md:table-cell" },
   { header: "Method", accessor: "method", className: "hidden md:table-cell" },
   { header: "Date", accessor: "date", className: "hidden md:table-cell" },
-  { header: "Status", accessor: "status" },
+  { header: "Status", accessor: "Status" },
   { header: "Actions", accessor: "action" },
 ];
 
-const PaymentListPage = () => {
-  const role = "admin"; 
+export default function PaymentListPage() {
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const role = "admin";
 
-  const renderRow = (payment: Payment) => (
+  useEffect(() => {
+    fetch("/api/payment")
+      .then((res) => res.json())
+      .then((data: Payment[]) => setPayments(data))
+      .catch(console.error);
+  }, []);
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "paid":
+      case "completed":
+        return "text-green-600 font-semibold";
+      case "pending":
+        return "text-orange-500 font-semibold";
+      case "failed":
+      case "cancelled":
+        return "text-red-600 font-semibold";
+      default:
+        return "text-gray-600";
+    }
+  };
+
+  const renderRow = (p: Payment) => (
     <tr
-      key={payment.id}
+      key={p.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="p-4">{payment.studentName}</td>
-      <td className="hidden md:table-cell">{payment.sessionName}</td>
-      <td className="hidden md:table-cell">${payment.amount}</td>
-      <td className="hidden md:table-cell">{payment.method}</td>
-      <td className="hidden md:table-cell">{payment.date}</td>
-      <td className={getStatusColor(payment.status)}>{payment.status}</td>
+      <td className="p-4">{p.studentName}</td>
+      <td className="hidden md:table-cell">{p.sessionName}</td>
+      <td className="hidden md:table-cell">${p.Amount}</td>
+      <td className="hidden md:table-cell">{p.method}</td>
+      <td className="hidden md:table-cell">{p.date}</td>
+      <td className={getStatusColor(p.Status)}>{p.Status}</td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" && (
             <>
-              <FormModal table="payment" type="update" data={payment} />
-              <FormModal table="payment" type="delete" id={payment.id} />
+              <FormModal table="payment" type="update" data={p} />
+              <FormModal table="payment" type="delete" id={p.id} />
             </>
           )}
         </div>
@@ -102,7 +79,7 @@ const PaymentListPage = () => {
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* Top Section */}
+      {/* Top Bar */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">All Payments</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
@@ -120,12 +97,10 @@ const PaymentListPage = () => {
       </div>
 
       {/* Table */}
-      <Table columns={columns} renderRow={renderRow} data={paymentsData} />
+      <Table columns={columns} renderRow={renderRow} data={payments} />
 
       {/* Pagination */}
       <Pagination />
     </div>
   );
-};
-
-export default PaymentListPage;
+}
