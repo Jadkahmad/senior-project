@@ -66,6 +66,14 @@ const SessionListPage = () => {
     fetchSessions();
   }, []);
 
+  const handleStatusChange = (id: number, newStatus: string) => {
+    setSessions((prev) =>
+      prev.map((session) =>
+        session.id === id ? { ...session, status: newStatus } : session
+      )
+    );
+  };
+
   const renderRow = (session: Session) => (
     <tr
       key={session.id}
@@ -84,6 +92,24 @@ const SessionListPage = () => {
             <>
               <FormModal table="session" type="update" data={session} />
               <FormModal table="session" type="delete" id={session.id} />
+
+              {/* Approve button to change status to "Completed" */}
+              <button
+                              className="w-7 h-7 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 transition cursor-pointer"
+                              onClick={() => handleStatusChange(session.id, "Canceled")}
+                              disabled={session.status=== "Canceled"}
+                              title="Reject"
+                            >
+                             <Image src="/reject.png" alt="Reject" width={16} height={16} />
+                             </button>
+              <button
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 hover:bg-green-200 transition cursor-pointer"
+                onClick={() => handleStatusChange(session.id, "Completed")}
+                disabled={session.status === "Completed"}
+                title="Approve"
+              >
+                <Image src="/accept3.png" alt="Approve" width={16} height={16} />
+              </button>
             </>
           )}
         </div>
@@ -100,10 +126,10 @@ const SessionListPage = () => {
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-300">
-              <Image src="/filter.png" alt="" width={14} height={14} />
+              <Image src="/filter.png" alt="Filter" width={14} height={14} />
             </button>
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-300">
-              <Image src="/sort.png" alt="" width={14} height={14} />
+              <Image src="/sort.png" alt="Sort" width={14} height={14} />
             </button>
             {role === "admin" && <FormModal table="session" type="create" />}
           </div>
@@ -124,3 +150,4 @@ const SessionListPage = () => {
 };
 
 export default SessionListPage;
+

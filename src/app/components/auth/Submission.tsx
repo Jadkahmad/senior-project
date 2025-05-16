@@ -113,7 +113,7 @@ const SubmissionForm : React.FC = () => {
                   <option value="">Select account type</option>
                   <option value="student">Student</option>
                   <option value="parent">Parent</option>
-                  <option value="teacher">Teacher</option>
+                  <option value="tutor">Tutor</option>
                 </select>
 
             <TextInput
@@ -198,6 +198,7 @@ const SubmissionForm : React.FC = () => {
             <SubmitButton
             buttonIcon={Send}
             className="cursor-pointer"
+            disabled={isLoading}
 
 
               title="Submit"

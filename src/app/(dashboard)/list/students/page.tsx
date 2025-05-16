@@ -26,8 +26,7 @@ const columns = [
   { header: "Info", accessor: "info" },
   { header: "Student ID", accessor: "studentId", className: "hidden md:table-cell" },
   { header: "RegType", accessor: "regtype", className: "hidden lg:table-cell" },
-  { header: "Parent ID", accessor: "parentId", className: "hidden md:table-cell" }, // ✅ FIXED
-  { header: "Address", accessor: "address", className: "hidden lg:table-cell" },
+  { header: "Parent ID", accessor: "parentId", className: "hidden md:table-cell" }, 
   { header: "Date of Admission", accessor: "dateOfAdmission", className: "hidden lg:table-cell" },
   { header: "Actions", accessor: "action" },
 ];
@@ -75,7 +74,7 @@ const StudentListPage = () => {
     >
       <td className="flex items-center gap-4 p-4">
         <Image
-          src={item.photo}
+          src="/avatar.png"
           alt=""
           width={40}
           height={40}
@@ -89,7 +88,6 @@ const StudentListPage = () => {
       <td className="hidden md:table-cell">{item.studentId}</td>
       <td className="hidden md:table-cell">{item.regtype}</td>
       <td className="hidden md:table-cell">{item.parentId}</td>
-      <td className="hidden md:table-cell">{item.address}</td>
       <td className="hidden md:table-cell">{item.dateOfAdmission}</td>
       <td>
         <div className="flex items-center gap-2">

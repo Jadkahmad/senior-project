@@ -7,6 +7,7 @@ import SessionForm from "./forms/SessionForm";
 import CourseForm from "./forms/CourseForm";
 import PaymentForm from "./forms/PaymentForm";
 
+
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => <h1>Loading...</h1>,
 });
@@ -35,6 +36,7 @@ const FormModal = ({
   id,
 }: {
   table:
+    | "tutor"
     | "teacher"
     | "student"
     | "parent"
@@ -42,7 +44,7 @@ const FormModal = ({
     | "course"
     | "payment"
     | "applications"
-    | "announcement";
+
   type: "create" | "update" | "delete" | "approve" | "reject";
   data?: any;
   id?: number;

@@ -72,19 +72,19 @@ const Footer = () => {
                 </h1>
                 <ul className="flex flex-col gap-3">
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="/" className="hover:text-white duration-200 font-semibold">
                       Home
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="/about-us" className="hover:text-white duration-200 font-semibold">
                       About
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="/become-tutor" className="hover:text-white duration-200 font-semibold">
                       Services
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <Link href="/sign-in" className="hover:text-white duration-200 font-semibold">
@@ -99,19 +99,19 @@ const Footer = () => {
                 </h1>
                 <ul className="flex flex-col gap-3">
                   <li>
-                    <a href="#" className="hover:text-white duration-20 font-semibold">
+                    <Link href="/" className="hover:text-white duration-20 font-semibold">
                       Our Services
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="/submission" className="hover:text-white duration-200 font-semibold">
                       Contact
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="#" className="hover:text-white duration-200 font-semibold">
                       Privacy Policy
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -121,24 +121,24 @@ const Footer = () => {
                 </h1>
                 <ul className="flex flex-col gap-3">
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="/" className="hover:text-white duration-200 font-semibold">
                       Home
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="/about-us" className="hover:text-white duration-200 font-semibold">
                       About
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="#" className="hover:text-white duration-200 font-semibold">
                       Services
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="hover:text-white duration-200 font-semibold">
+                    <Link href="/sign-in" className="hover:text-white duration-200 font-semibold">
                       Login
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

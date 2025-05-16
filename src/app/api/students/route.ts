@@ -39,11 +39,11 @@ export async function POST(req: Request){
         ]
       );
       const transporter = nodemailer.createTransport({
-        host: 'smtp.mailtrap.io',
+        host: 'gmail',
         port: 587,
         auth: {
-          user: process.env.MAILTRAP_USER!,
-          pass: process.env.MAILTRAP_PASS!,
+          user: process.env.SMTP_USER!,
+          pass: process.env.SMTP_PASS!,
         },
       });
        const [rows]: any = await db.execute(

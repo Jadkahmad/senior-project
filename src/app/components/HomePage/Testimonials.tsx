@@ -6,30 +6,32 @@ import Slider from "react-slick";
 export const TestimonialsData = [
   {
     id: 1,
-    name: "John Doe",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque reiciendis inventore iste ratione ex alias quis magni at optio",
-    img: "https://picsum.photos/101/101",
+    name: "Nadine H. - Parent",
+    text: "We’ve tried many tutors before, but nothing matched the level of professionalism and structure we found at Ijtahed Center. My daughter’s confidence in math has grown tremendously."
+
+,
+    img: "/avatar.png",
     delay: 0.2,
   },
   {
     id: 2,
-    name: "Steve Smith",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque reiciendis inventore iste ratione ex alias quis magni at optio",
-    img: "https://picsum.photos/102/102",
+    name: "Rania S. - Parent",
+    text: "Booking a tutor was incredibly easy, and the experience felt just like being at a real academic center even from home. The tutor was punctual, well prepared, and engaging.",
+    img: "/avatar.png",
     delay: 0.5,
   },
   {
     id: 3,
-    name: "Kristen",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque reiciendis inventore iste ratione ex alias quis magni at optio",
-    img: "https://picsum.photos/104/104",
+    name: "Karim - Student",
+    text: "Before joining Ijtahed, I struggled to understand physics. The tutor explained everything so clearly that I started enjoying the subject — and I finally passed with confidence.",
+    img: "/avatar.png",
     delay: 0.8,
   },
   {
     id: 5,
-    name: "Ariana",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque reiciendis inventore iste ratione ex alias quis magni at optio",
-    img: "https://picsum.photos/103/103",
+    name: "Ahmad - Student",
+    text: "Ijtahed is not just a tutoring service, it’s a full academic experience. Their commitment to student progress and parent communication is unmatched.",
+    img: "/avatar.png",
     delay: 1.1,
   },
 ];
@@ -102,7 +104,7 @@ const Testimonials = () => {
                       <p className="text-xl font-bold text-black/80">
                         {data.name}
                       </p>
-                      <p>{data.name}</p>
+                      
                     </div>
                   </div>
                   {/* bottom section */}

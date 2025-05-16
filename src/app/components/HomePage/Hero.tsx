@@ -18,7 +18,7 @@ const Hero: React.FC = () => {
               variants={SlideRight(0.4)}
               initial="hidden"
               animate="visible"
-              className=" uppercase font-semibold"
+              className=" uppercase font-semibold text-blue-500"
             >
               100% Satisfaction Guarantee
             </motion.p>
@@ -26,10 +26,10 @@ const Hero: React.FC = () => {
               variants={SlideRight(0.6)}
               initial="hidden"
               animate="visible"
-              className="text-5xl lg:text-6xl font-semibold !leading-tight"
+              className="text-4xl lg:text-4xl font-semibold !leading-tight"
             >
-              Find Your Perfect
-              <span className="text-black"> Tutor</span>{" "}
+              Bringing Quality Education to Every Corner of
+              <span className="text-black"> Lebanon</span>{" "}
             </motion.h1>
             <motion.p
               variants={SlideRight(0.8)}
@@ -37,9 +37,27 @@ const Hero: React.FC = () => {
               animate="visible"
               className="text-gray-600 xl:max-w-[500px]"
             >
-              We help you find perfect tutor for 1-on-1 lessons.
-              Connecting Every Corner Of The Country
+              We deliver the full academic center experience to your home by connecting you with expert tutors in your city.
+              
             </motion.p>
+            <motion.p
+              variants={SlideRight(0.8)}
+              initial="hidden"
+              animate="visible"
+              className="text-gray-600 xl:max-w-[500px] font-extrabold text-xl"
+            >
+              Boost Grades & Build Confidence.
+            </motion.p>
+            <motion.p
+              variants={SlideRight(0.8)}
+              initial="hidden"
+              animate="visible"
+              className="text-gray-600 xl:max-w-[500px] font-extrabold text-xl"
+            >
+              Anytime, Anywhere.
+            </motion.p>
+
+            
             {/* button section */}
             <motion.div
               variants={SlideRight(1.0)}
@@ -52,12 +70,14 @@ const Hero: React.FC = () => {
                 Get Started
               </button>
               </Link>
+              <Link href={"https://www.instagram.com/ijtahed.lb?igsh=b2UzaWt5MjNpYzU3&utm_source=qr"}>
               <button className="flex justify-center items-center gap-2 font-semibold">
                 <span className="w-10 h-10 bg-secondary/15 rounded-full flex justify-center items-center">
                   <FaPlay className="text-blue-500 cursor-pointer" />
                 </span>
                 See how it works
               </button>
+              </Link>
             </motion.div>
           </div>
         </div>

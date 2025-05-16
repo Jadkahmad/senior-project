@@ -9,6 +9,8 @@ import SubmitButton from "../FormInputs/SubmitButton";
 import PasswordInput from "../FormInputs/PasswordInput";
 import { signIn } from "next-auth/react";
 import { IdCard, Lock, LogInIcon } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export type RegisterInputProps = {
   
   id: string;
@@ -26,7 +28,7 @@ export default function SignIn() {
   } = useForm<RegisterInputProps>();
   const router = useRouter();
   async function onSubmit(data: RegisterInputProps) {
-    console.log(data);
+    setIsLoading(true);
     //Here i should send data to my backend
     const res = await signIn("credentials", {
       redirect: false, // we’ll handle redirect manually
@@ -45,11 +47,15 @@ export default function SignIn() {
       else if (role === "tutor") router.push("/tutor");
       else if (role === "parent") router.push("/parent");
       else if (role === "admin") router.push("/admin");
-      else router.push("/");
+      //else router.push("/");
 
     } else {
-      alert("Invalid username or password");
+      toast.error("Invalid username or password. Please try again.", {
+        position: "top-left",
+        autoClose: 5000,
+      });
     }
+    setIsLoading(false);
   }
   return (
     <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
@@ -82,16 +88,18 @@ export default function SignIn() {
               type="password"
               errors={errors}
               placeholder="  ******"
-              forgotPasswordLink="Forgot Your Pass?"
+              forgotPasswordLink="/forgot-pass"
             />
 
             <SubmitButton
+            className="cursor-pointer"
             buttonIcon={LogInIcon}
 
 
               title="LogIn"
               loading={isLoading}
               loadingTitle="Logging In to your account please wait..."
+              disabled={isLoading}
             />
           </form>
           <div className="mt-4 text-center text-sm">

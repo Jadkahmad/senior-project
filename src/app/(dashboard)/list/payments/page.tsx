@@ -48,9 +48,19 @@ export default function PaymentListPage() {
       case "failed":
       case "cancelled":
         return "text-red-600 font-semibold";
+        case "unpaid":
+        return "text-red-600 font-semibold";
       default:
         return "text-gray-600";
     }
+  };
+
+  const handleStatusChange = (id: number, newStatus: string) => {
+    setPayments((prev) =>
+      prev.map((payment) =>
+        payment.id === id ? { ...payment, Status: newStatus } : payment
+      )
+    );
   };
 
   const renderRow = (p: Payment) => (
@@ -70,6 +80,24 @@ export default function PaymentListPage() {
             <>
               <FormModal table="payment" type="update" data={p} />
               <FormModal table="payment" type="delete" id={p.id} />
+
+              {/* Approve button to change status to "Completed" */}
+              <button
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 transition cursor-pointer"
+                onClick={() => handleStatusChange(p.id, "Unpaid")}
+                disabled={p.Status === "Unapaid"}
+                title="Reject"
+              >
+               <Image src="/reject.png" alt="Reject" width={16} height={16} />
+              </button>
+              <button
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-green-100 hover:bg-green-200 transition cursor-pointer"
+                onClick={() => handleStatusChange(p.id, "Paid")}
+                disabled={p.Status === "Paid"}
+                title="Approve"
+              >
+                <Image src="/accept3.png" alt="Approve" width={16} height={16} />
+              </button>
             </>
           )}
         </div>
@@ -104,3 +132,4 @@ export default function PaymentListPage() {
     </div>
   );
 }
+

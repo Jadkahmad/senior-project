@@ -15,6 +15,8 @@ export async function POST(req: Request){
       address,
       notes
     } = body;
+    
+    console.log(role);
     await db.execute(
       `INSERT INTO application
       (Full_name, Email,Phone,Address,User_type,Status)

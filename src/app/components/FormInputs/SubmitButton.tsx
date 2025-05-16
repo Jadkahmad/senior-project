@@ -10,6 +10,7 @@ type SubmitButtonProps = {
   buttonIcon?: any;
   loading: boolean;
   showIcon?: boolean;
+  disabled:boolean;
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
 };
 export default function SubmitButton({

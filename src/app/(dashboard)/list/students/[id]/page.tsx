@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Announcements from "@/app/components/dashboard/Announcemens";
 import BigCalendar from "@/app/components/dashboard/BigCalendar";
+import FormModal from "@/app/components/FormModel";
+import { role } from "@/app/lib/data";
 
 const SingleStudentPage = () => {
   const { id } = useParams();
@@ -62,7 +64,7 @@ const SingleStudentPage = () => {
           <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
             <div className="w-1/3">
               <Image
-                src="https://images.pexels.com/photos/5414817/pexels-photo-5414817.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                src="/avatar.png"
                 alt="Student"
                 width={144}
                 height={144}
@@ -72,15 +74,14 @@ const SingleStudentPage = () => {
             <div className="w-2/3 flex flex-col justify-between gap-4">
               <h1 className="text-xl font-semibold">
                 {student.firstName} {student.lastName}
+                {role === "admin" && (
+                                  <FormModal table="student" type="update" data={student} />
+                                )}
               </h1>
               <p className="text-sm text-gray-500">
                 {student.regtype.replace("_", " ")}
               </p>
               <div className="flex flex-wrap gap-2 text-xs font-medium">
-                <div className="flex items-center gap-2">
-                  <Image src="/blood.png" alt="" width={14} height={14} />
-                  <span>{student.Gender}</span>
-                </div>
                 <div className="flex items-center gap-2">
                   <Image src="/date.png" alt="" width={14} height={14} />
                   <span>{new Date(student.dob).toLocaleDateString()}</span>

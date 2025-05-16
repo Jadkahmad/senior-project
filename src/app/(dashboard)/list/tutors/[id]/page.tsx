@@ -74,7 +74,7 @@ const SingleTeacherPage = () => {
           <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
             <div className="w-1/3">
               <Image
-                src="https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                src="/avatar.png"
                 alt="Profile"
                 width={144}
                 height={144}
@@ -93,19 +93,19 @@ const SingleTeacherPage = () => {
               </p>
               <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
                 <div className="flex items-center gap-2 w-full md:w-1/2">
-                  <Image src="/mail.png" alt="" width={14} height={14} />
+                  <Image src="/mail.png" alt="" width={25} height={20} />
                   <span>{tutor.email}</span>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-1/2">
-                  <Image src="/phone.png" alt="" width={14} height={14} />
+                  <Image src="/phone.png" alt="" width={25} height={20} />
                   <span>{tutor.phone}</span>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-1/2">
-                  <Image src="/location.png" alt="" width={14} height={14} />
+                  <Image src="/location.png" alt="" width={25} height={20} />
                   <span>{tutor.address}</span>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-1/2">
-                  <Image src="/gender.png" alt="" width={14} height={14} />
+                  <Image src="/maleFemale.png" alt="" width={25} height={20} />
                   <span className="capitalize">{tutor.gender}</span>
                 </div>
               </div>

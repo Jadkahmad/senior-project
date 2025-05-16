@@ -41,7 +41,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-       <ToastContainer
+      
+      <body className={inter.className}>
+      <ToastContainer
           position="top-right"
           autoClose={5000}
           hideProgressBar={false}
@@ -49,7 +51,6 @@ export default function RootLayout({
           closeOnClick
           pauseOnHover
         />
-      <body className={inter.className}>
       <SessionProvider>
           {children}
         </SessionProvider></body>

@@ -1,44 +1,46 @@
 "use client";
 import React from "react";
 import { GrYoga } from "react-icons/gr";
-import { FaDumbbell } from "react-icons/fa6";
-import { GiGymBag } from "react-icons/gi";
+import { FaDumbbell, FaMoneyBills } from "react-icons/fa6";
+import { GiGymBag, GiQuickSlash } from "react-icons/gi";
 import { motion } from "framer-motion";
 import { SlideLeft } from "@/utility/animation";
+import { MdSchool } from "react-icons/md";
+import { FaBookOpen, FaCity, FaCreditCard, FaMoneyBill, FaMoneyCheck } from "react-icons/fa";
 
 const EquipmentData = [
   {
     id: 1,
-    title: "One-on-one Teaching",
-    desc: "All of our special education experts have a degree in special education.",
-    icon: <GrYoga />,
+    title: "Hybrid Tutoring Experience",
+    desc: "Students can attend sessions physically at our center or enjoy the same high-quality, structured tutoring from the comfort of their home. We deliver personalized learning wherever you are.",
+    icon: <MdSchool />,
     bgColor: "#0063ff",
     delay: 0.3,
   },
   {
     id: 2,
-    title: "24/7 Tutor Availability",
-    desc: "Our tutors are always available to respond as quick as possible for you",
+    title: "City-Based Tutor Matching System",
+    desc: "Our platform connects students with expert tutors from their own city for at-home sessions. This ensures reliable, timely service and builds stronger learning relationships.",
     link: "/",
-    icon: <FaDumbbell />,
+    icon: <FaCity />,
     bgColor: "#73bc00",
     delay: 0.6,
   },
   {
     id: 3,
-    title: "Interactive Whiteboard",
-    desc: "Our digital whiteboard equipped with audio and video chat fetures.",
+    title: "Quality Teaching",
+    desc: "At Ijtahed Center, we apply proven educational strategies guided by expert tutors who follow structured teaching plans. Whether sessions are online or on-campus, ensuring real academic progress, not just participation.",
     link: "/",
-    icon: <GiGymBag />,
+    icon: <FaBookOpen />,
     bgColor: "#fa6400",
     delay: 0.9,
   },
   {
     id: 4,
-    title: "Affordable Prices",
-    desc: "Choose an expert tutor based on your budget and per hour.",
+    title: "Affordable & Flexible Pricing",
+    desc: "We make high-quality tutoring accessible to every family. With flexible payment options, pay per session or choose a monthly plan. Professional education at a price that fits your needs.",
     link: "/",
-    icon: <GiGymBag />,
+    icon: <FaCreditCard/>,
     bgColor: "#fe6baa",
     delay: 0.9,
   },
@@ -53,7 +55,7 @@ const WhyChooseUs = () => {
             Why Choose us
           </h1>
           <p className="font-semibold text-3xl ">
-            Benefits of online tutoring services with us
+            Empowering Students with Personalized Tutoring
           </p>
         </div>
 
