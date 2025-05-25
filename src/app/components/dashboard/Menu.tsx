@@ -95,11 +95,10 @@ const Menu = () => {
           {section.items.map((item) => {
             const isLogout = item.label === "Logout";
             const isProfile = item.label === "Profile";
-
-            // Admin sees all, others see only Profile & Logout
+            const isBookASession = item.label == "Book a session";
             if (
               role === "admin" ||
-              role !== "admin" && (isLogout || isProfile)
+              role !== "admin" && (isLogout || isProfile ||isBookASession)
             ) {
               return isLogout ? (
                 <button

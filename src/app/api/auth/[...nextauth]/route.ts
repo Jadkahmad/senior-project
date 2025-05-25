@@ -47,7 +47,7 @@ export const authOptions = {
           console.log(password);
           console.log(user.password);
           if (await bcrypt.compare(password, user.password)) {
-            return { id: user.userid, name: user.userid, role: 'student' };
+            return { id: user.Id, name: user.User_id, role: 'student' };
           }
         }
 
@@ -59,7 +59,7 @@ export const authOptions = {
         if (tutorRows.length > 0) {
           const user = tutorRows[0];
           if (await bcrypt.compare(password, user.password)) {
-            return { id: user.userid, name: user.userid, role: 'tutor' };
+            return { id: user.User_id, name: user.User_id, role: 'tutor' };
           }
         }
 
@@ -72,7 +72,7 @@ export const authOptions = {
           console.log("testt");
           const user = parentRows[0];
           if (await bcrypt.compare(password, user.password)) {
-            return { id: user.userid, name: user.userid, role: 'parent' };
+            return { id: user.User_id, name: user.User_id, role: 'parent' };
           }
         }
 

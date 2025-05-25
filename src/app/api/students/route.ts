@@ -39,7 +39,7 @@ export async function POST(req: Request){
         ]
       );
       const transporter = nodemailer.createTransport({
-        host: 'gmail',
+        host: 'smtp.gmail.com',
         port: 587,
         auth: {
           user: process.env.SMTP_USER!,
@@ -58,7 +58,7 @@ export async function POST(req: Request){
         to: rows[0].Email,
         subject: `${firstName} ${lastName} account created`,
         html: `
-          <h2>Your account has been created</h2>
+          <h2>Account has been created</h2>
           <p><strong>ID:</strong> ${userid}</p>
           <p><strong>Password:</strong> ${password}</p>
         `,

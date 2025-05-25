@@ -54,7 +54,8 @@ useEffect(() => {
         name: `${item.First_name} ${item.Last_name}`,
         email: item.Email,
         phone: item.Phone_number,
-        address: item.Address
+        address: item.Address,
+        userId :item.User_id
       }));
 
       setParents(formatted);

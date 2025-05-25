@@ -53,7 +53,7 @@ const StudentListPage = () => {
           class: s.Level,
           address: s.Address,
           dateOfAdmission: s.Admission_Date,
-          parentId: s.parentUserId ?? "N/A", // show N/A if null
+          parentId: s.parentUserId ?? "N/A",
         }));
 
         setStudents(formatted);
@@ -88,7 +88,7 @@ const StudentListPage = () => {
       <td className="hidden md:table-cell">{item.studentId}</td>
       <td className="hidden md:table-cell">{item.regtype}</td>
       <td className="hidden md:table-cell">{item.parentId}</td>
-      <td className="hidden md:table-cell">{item.dateOfAdmission}</td>
+      <td className="hidden md:table-cell">{item.dateOfAdmission.split("T")[0]}</td>
       <td>
         <div className="flex items-center gap-2">
           <Link href={`/list/students/${item.id}`}>

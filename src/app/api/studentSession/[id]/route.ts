@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const id = parts[parts.length - 1];
 
     const db = await createConnection();
-
+console.log(id);
     const [rows]: any = await db.execute(
       `
       SELECT 
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
       `,
       [id]
     );
-
+console.log(rows);
     if (!rows || rows.length === 0) {
       return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }

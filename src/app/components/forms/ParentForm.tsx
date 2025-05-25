@@ -31,6 +31,7 @@ const ParentForm = ({
   type: "create" | "update";
   data?: any;
 }) => {
+  console.log("Parent form data:", data);
   const {
     register,
     handleSubmit,
@@ -42,7 +43,6 @@ const ParentForm = ({
   const onSubmit = handleSubmit(async (formData) => {
     
     try {
-     
       const data = new FormData();
       data.append("id", formData.id);
       data.append("firstName", formData.firstName);
@@ -53,7 +53,7 @@ const ParentForm = ({
       data.append("phone", formData.phone); 
   
       const res = await fetch("/api/parents", {
-        method: "POST",
+        method: type === "create" ? "POST" : "PUT",
         body: data,
       });
   
@@ -61,10 +61,10 @@ const ParentForm = ({
   
       const result = await res.json();
       console.log("Success:", result.message);
+      window.location.reload();
 
     } catch (error) {
       console.error("Submission error:", error);
-      // Optional: show error to user
       alert("Error adding parent");
     }
   });
@@ -83,21 +83,21 @@ const ParentForm = ({
         <InputField
           label="ID"
           name="id"
-          defaultValue={data?.id}
+          defaultValue={data?.userId}
           register={register}
           error={errors?.id}
         />
         <InputField
           label="First Name"
           name="firstName"
-          defaultValue={data?.firstName}
+          defaultValue={data?.name.split(" ")[0]}
           register={register}
           error={errors?.firstName}
         />
         <InputField
           label="Last Name"
           name="lastName"
-          defaultValue={data?.lastName}
+          defaultValue={data?.name.split(" ")[1]}
           register={register}
           error={errors?.lastName}
         />
