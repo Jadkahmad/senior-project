@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     const parts = url.pathname.split("/");
     const tutorId = parts[parts.length - 1];
-
+    console.log(tutorId);
     const db = await createConnection();
 
     const [rows]: any = await db.execute(
@@ -24,9 +24,10 @@ export async function GET(req: NextRequest) {
       FROM session s
       JOIN course c ON s.Course_id = c.id
       JOIN student st ON s.Student_id = st.id
-      WHERE s.Tutor_id = ?
+      JOIN Tutor t ON t.id = s.Tutor_id
+      WHERE s.Tutor_id = ? or t.User_id = ?
       `,
-      [tutorId]
+      [tutorId,tutorId]
     );
 
     return NextResponse.json(rows);

@@ -1,23 +1,67 @@
-import Announcements from "@/app/components/dashboard/Announcemens";
+"use client";
+
+import { useEffect, useState } from "react";
 import BigCalendar from "@/app/components/dashboard/BigCalendar";
-
-
+import Announcements from "@/app/components/dashboard/Announcemens";
+import EventCalendar from "@/app/components/dashboard/EventCalendar";
 
 const ParentPage = () => {
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const sessionRes = await fetch("/api/auth/session");
+        const sessionData = await sessionRes.json();
+        const parentId = sessionData?.user?.name;
+        console.log(parentId);
+        if (!parentId) return;
+        console.log("TEST");
+        const res = await fetch(`/api/parentSession?parentId=${parentId}`);
+        const sessions = await res.json();
+
+        const formatted = sessions.map((s: any) => {
+          const [sh, sm] = s.startTime.split(":");
+          const [eh, em] = s.endTime.split(":");
+          const date = new Date(s.date);
+          const start = new Date(date);
+          const end = new Date(date);
+          start.setHours(sh, sm);
+          end.setHours(eh, em);
+          return {
+            id: s.id,
+            title: `${s.First_name} ${s.Last_name} - ${s.courseName} (${s.tutorName})`,
+            start,
+            end,
+          };
+        });
+
+        setEvents(formatted);
+      } catch (err) {
+        console.error("Error loading parent schedule:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSchedule();
+  }, []);
+
   return (
-    <div className="flex-1 p-4 flex gap-4 flex-col xl:flex-row">
-      {/* LEFT */}
+    <div className="p-4 flex gap-4 flex-col xl:flex-row">
       <div className="w-full xl:w-2/3">
         <div className="h-full bg-white p-4 rounded-md">
-
-          
-          
-          <h1 className="text-xl font-semibold mt-8">Schedule (John Doe)</h1>
-          <BigCalendar />
+          <h1 className="text-xl font-semibold">Schedule</h1>
+          {loading ? (
+            <p className="text-sm text-gray-400 mt-4">Loading schedule...</p>
+          ) : (
+            <BigCalendar events={events} />
+          )}
         </div>
       </div>
-      {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-8">
+        <EventCalendar />
         <Announcements />
       </div>
     </div>

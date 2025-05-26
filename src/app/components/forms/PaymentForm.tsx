@@ -54,11 +54,12 @@ useEffect(() => {
           selectedStudentId = matchStudent.id.toString();
           const sessionsRes = await fetch(`/api/studentSession?studentId=${selectedStudentId}`);
           const sessionsData = await sessionsRes.json();
+          console.log(sessionsData);
           setSessions(sessionsData);
 
           const matchSession = sessionsData.find(
             (s: any) =>
-              `${s.courseName} - ${s.tutorName} (${s.date})` === data.sessionName
+              `${s.courseName} - ${s.tutorName} - ${s.regtype} (${s.date})` === data.sessionName
           );
 
           reset({
@@ -145,7 +146,7 @@ useEffect(() => {
             <option value="">Select a session</option>
             {sessions.map((s) => (
               <option key={s.id} value={s.id}>
-                {`${s.courseName} - ${s.tutorName} (${s.date})`}
+                {`${s.courseName} - ${s.tutorName} - ${s.regtype} (${s.date})`}
               </option>
             ))}
           </select>

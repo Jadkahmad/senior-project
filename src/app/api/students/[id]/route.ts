@@ -19,7 +19,9 @@ export async function GET(req: NextRequest) {
         s.Admission_Date AS dateOfAdmission,
         s.Registration_type AS regtype,
         s.DOB AS dob,
+        s.Gender as gender,
         s.Level AS class,
+        s.Parent_id AS parentId,
         p.User_id AS parentUserId
       FROM student s
       LEFT JOIN parent p ON s.Parent_id = p.id

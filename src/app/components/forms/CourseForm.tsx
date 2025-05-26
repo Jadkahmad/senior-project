@@ -54,7 +54,7 @@ const CourseForm = ({
         throw new Error(result.error || "Something went wrong");
       }
   
-      toast.success("Course submitted successfully!");
+     window.location.reload();
     } catch (error) {
       console.error("Failed to submit course:", error);
       toast.error("Failed to submit course.");

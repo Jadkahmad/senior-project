@@ -53,6 +53,8 @@ export async function GET() {
             c.Title,                -- course
             ' - ',
             t.Full_name,            -- tutor
+            ' - ',
+            st.Registration_type,
             ' (',
             DATE_FORMAT(s.Date, '%Y-%m-%d'),  -- date
             ')'

@@ -3,9 +3,9 @@ import { createConnection } from '@/app/lib/db';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const sid = url.searchParams.get('studentId');
-  if (!sid) {
-    return NextResponse.json({ error: 'studentId is required' }, { status: 400 });
+  const pid = url.searchParams.get('parentId');
+  if (!pid) {
+    return NextResponse.json({ error: 'parentId is required' }, { status: 400 });
   }
   try {
     const db = await createConnection();
@@ -14,6 +14,8 @@ export async function GET(req: Request) {
       SELECT
         s.id,
         c.Title        AS courseName,
+        st.First_name,
+        st.Last_name,
         t.Full_name    AS tutorName,
         st.Registration_type AS regtype,
         DATE_FORMAT(s.Date, '%Y-%m-%d') AS date,
@@ -23,9 +25,10 @@ export async function GET(req: Request) {
       JOIN course c  ON s.Course_id = c.id
       JOIN tutor  t  ON s.Tutor_id  = t.id
       JOIN Student st ON s.Student_id = st.id
-      WHERE s.Student_id = ? or st.User_id = ?
+      JOIN Parent p ON st.Parent_id = p.id
+      WHERE p.User_id = ?
       `,
-      [sid,sid]
+      [pid]
     );
     return NextResponse.json(rows);
   } catch (e) {

@@ -7,7 +7,6 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const { pathname } = req.nextUrl;
 
-  // Allow requests to static files, API routes, and public home
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api')
@@ -39,7 +38,9 @@ export async function middleware(req: NextRequest) {
   if (!token && pathname !== '/sign-in') {
     return NextResponse.redirect(new URL('/sign-in', req.url));
   }
-
+  if (token && pathname === '/list/booking') {
+    return NextResponse.next();
+  }
   const rolePaths: Record<string, string> = {
     student: '/student',
     parent: '/parent',

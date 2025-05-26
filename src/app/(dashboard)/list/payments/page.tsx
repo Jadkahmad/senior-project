@@ -55,13 +55,30 @@ export default function PaymentListPage() {
     }
   };
 
-  const handleStatusChange = (id: number, newStatus: string) => {
+const handleStatusChange = async (id: number, newStatus: string) => {
+  try {
+    console.log(id);
+    console.log(newStatus);
+    const res = await fetch("/api/payment/status", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status: newStatus }),
+    });
+
+    if (!res.ok) throw new Error("Status update failed");
+
     setPayments((prev) =>
       prev.map((payment) =>
         payment.id === id ? { ...payment, Status: newStatus } : payment
       )
     );
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Could not update payment status");
+  }
+};
+
+
 
   const renderRow = (p: Payment) => (
     <tr

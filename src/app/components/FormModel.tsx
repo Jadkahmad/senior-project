@@ -74,6 +74,10 @@ const FormModal = ({
             case "payment":
               endpoint = "/api/payment";
               break;
+            case "parent":
+              endpoint = "/api/parents";
+              break;
+              
             default:
               return alert("Unknown delete target.");
           }

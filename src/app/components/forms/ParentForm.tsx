@@ -40,7 +40,7 @@ const ParentForm = ({ type, data }: { type: "create" | "update"; data?: any }) =
       data.append("phone", formData.phone);
 
       const res = await fetch("/api/parents", {
-        method: "POST",
+        method: type === "create" ? "POST" : "PUT",
         body: data,
       });
 
