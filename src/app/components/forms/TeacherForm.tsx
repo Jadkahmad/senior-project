@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "./InputField";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
 
 const schema = z.object({
   id: z
@@ -23,6 +23,7 @@ const schema = z.object({
   experienceYears: z.string().min(1, { message: "Address is required!" }),
   subjectspecs: z.string().min(1,{ message: "subject is required!" }),
   gender: z.enum(["male", "female"], { message: "Sex is required!" }),
+  availability: z.string().min(1, { message: "Availability is required!" }),
   // img: z.instanceof(File).optional(),
 
 });
@@ -155,6 +156,14 @@ const onSubmit = handleSubmit(async (formData) => {
           error={errors.subjectspecs}
           type="text"
         />
+        <InputField
+          label="Availability"
+          name="availability"
+          defaultValue={data?.availability}
+          register={register}
+          error={errors.availability}
+          type="text"
+        />
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Gender</label>
           <select
@@ -169,7 +178,9 @@ const onSubmit = handleSubmit(async (formData) => {
             <p className="text-xs text-red-400">
               {errors.gender.message.toString()}
             </p>
+            
           )}
+          
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           {/* <label

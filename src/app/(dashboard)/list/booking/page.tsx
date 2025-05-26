@@ -184,8 +184,7 @@ const BookingForm: React.FC = () => {
                 className="cursor-pointer"
                 title="Submit Booking"
                 loading={isLoading}
-                loadingTitle="Submitting..."
-              />
+                loadingTitle="Submitting..." disabled={false}              />
             </form>
           </div>
         </div>

@@ -18,12 +18,18 @@ type Tutor = {
   subjects: string[];
   classes: string[];
   address: string;
+  availability:string; 
 };
 
 const columns = [
   {
     header: "Info",
     accessor: "info",
+  },
+  {
+    header: "Availability",
+    accessor: "availability",
+    className: "hidden md:table-cell",
   },
   {
     header: "Teacher ID",
@@ -108,6 +114,7 @@ useEffect(() => {
           <p className="text-xs text-gray-500">{item?.email}</p>
         </div>
       </td>
+      <td className="hidden md:table-cell">{item.availability}</td>
       <td className="hidden md:table-cell">{item.teacherId}</td>
       <td className="hidden md:table-cell">{item.subjects.join(",")}</td>
       <td className="hidden md:table-cell">{item.classes.join(",")}</td>

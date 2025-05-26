@@ -21,7 +21,7 @@ const ResponsiveMenu: React.FC<ResponsiveMenuProps> = ({ open }) => {
           <div className="text-xl font-semibold uppercase text-black py-10 m-6 rounded-3xl bg-blue-500">
             <ul className="flex flex-col justify-center items-center gap-10">
              <Link href={"/"}> <button className="cursor-pointer">Home</button> </Link>
-             <Link href={"/"}> <button className="cursor-pointer">About us</button> </Link>
+             <Link href={"/about-us"}> <button className="cursor-pointer">About us</button> </Link>
               <Link href={"/sign-in"}> <button className="cursor-pointer">Login</button> </Link>
               <Link href={"/submission"}> <button className="cursor-pointer">Book A Session</button> </Link>
             </ul>
