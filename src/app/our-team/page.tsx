@@ -10,25 +10,30 @@ const tutors = [
     subject: "Full Agenda Tutor",
     experience: "5 years",
     imageUrl: "/jad.png",
+    address:"Beirut"
   },
   {
     name: "Nour Al Jurdy",
     subject: "Arabic Tutor",
     experience: "3 years",
     imageUrl: "/nour.png",
+    address:"Bekaa",
   },
   {
     name: "Aline",
     subject: "Agenda and Scientific Tutor",
     experience: "2 years",
     imageUrl: "/aline.png",
+    address:"Jnoub",
+    
   },
 
   {
     name: "Salem",
-    subject: "Agend Tutor",
+    subject: "Agenda Tutor",
     experience: "3 years",
     imageUrl: "/avatar.png",
+    address:"Jnoub",
   },
 ];
 
@@ -49,6 +54,7 @@ const TutorsGrid = () => {
                 subject={tutor.subject}
                 experience={tutor.experience}
                 imageUrl={tutor.imageUrl}
+                address={tutor.address}
               />
             ))}
           </div>

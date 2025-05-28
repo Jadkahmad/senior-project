@@ -71,6 +71,8 @@ const BookingForm: React.FC = () => {
     }
   };
 
+  
+
   return (
     <section className="bg-gray-100 py-16 px-4">
       <div className="max-w-6xl mx-auto">
@@ -192,5 +194,6 @@ const BookingForm: React.FC = () => {
     </section>
   );
 };
+
 
 export default BookingForm;

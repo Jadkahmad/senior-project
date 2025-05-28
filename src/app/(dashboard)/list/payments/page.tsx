@@ -6,6 +6,7 @@ import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 type Payment = {
   id: number;
@@ -30,6 +31,9 @@ const columns = [
 export default function PaymentListPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const role = "admin";
+  const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
   useEffect(() => {
     fetch("/api/payment")
@@ -37,6 +41,11 @@ export default function PaymentListPage() {
       .then((data: Payment[]) => setPayments(data))
       .catch(console.error);
   }, []);
+  const filteredPayments = payments.filter((payment) =>
+    payment.studentName.toLowerCase().includes(searchQuery) ||
+    payment.Status.toLowerCase().includes(searchQuery) ||
+    payment.sessionName.toLowerCase().includes(searchQuery)
+  );
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -141,8 +150,9 @@ const handleStatusChange = async (id: number, newStatus: string) => {
         </div>
       </div>
 
-      {/* Table */}
-      <Table columns={columns} renderRow={renderRow} data={payments} />
+      
+      <Table columns={columns} renderRow={renderRow} data={filteredPayments} />
+      
 
       {/* Pagination */}
       <Pagination />

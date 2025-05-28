@@ -8,9 +8,10 @@ interface TutorCardProps {
   subject: string; // Tutor's subject specialization
   experience: string; // Years of experience
   imageUrl: string; // Image URL for the tutor
+  address: string;
 }
 
-const TutorCard: React.FC<TutorCardProps> = ({ name, subject, experience, imageUrl }) => {
+const TutorCard: React.FC<TutorCardProps> = ({ name, subject, experience, imageUrl, address }) => {
   return (
     <div className="group relative w-64 h-80 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
       {/* Tutor Image */}
@@ -25,6 +26,7 @@ const TutorCard: React.FC<TutorCardProps> = ({ name, subject, experience, imageU
         <h2 className="text-lg font-bold mb-2">{name}</h2>
         <p className="text-sm mb-1">Experience: {experience}</p>
         <p className="text-sm text-center">Specialization: {subject}</p>
+        <p className="text-sm text-center">Address: {address}</p>
       </div>
 
       {/* Name Display */}

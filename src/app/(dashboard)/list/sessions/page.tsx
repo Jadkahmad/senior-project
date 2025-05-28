@@ -6,7 +6,7 @@ import Pagination from "@/app/components/dashboard/Pagiantion";
 import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
 import Image from "next/image";
-
+import { useSearchParams } from "next/navigation";
 type Session = {
   id: number;
   studentName: string;
@@ -48,6 +48,8 @@ const getStatusColor = (status: string) => {
 const SessionListPage = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || ""; 
   const role = "admin";
 
   useEffect(() => {
@@ -65,6 +67,11 @@ const SessionListPage = () => {
 
     fetchSessions();
   }, []);
+  const filteredSessions = sessions.filter((session) =>
+    session.studentName.toLowerCase().includes(searchQuery) ||
+    session.courseName.toLowerCase().includes(searchQuery) ||
+    session.tutorName.toLowerCase().includes(searchQuery)
+  );
 
   const handleStatusChange = (id: number, newStatus: string) => {
     setSessions((prev) =>
@@ -140,7 +147,7 @@ const SessionListPage = () => {
       {loading ? (
         <p className="text-gray-400 p-4">Loading sessions...</p>
       ) : (
-        <Table columns={columns} renderRow={renderRow} data={sessions} />
+        <Table columns={columns} renderRow={renderRow} data={filteredSessions} />
       )}
 
       {/* Pagination */}

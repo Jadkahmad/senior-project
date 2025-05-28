@@ -6,6 +6,7 @@ import TableSearch from "@/app/components/dashboard/TableSearch";
 import { parentsData, role } from "@/app/lib/data";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Parent = {
   id: number;
@@ -41,6 +42,8 @@ const columns = [
 const ParentListPage = () => {
   const [parents, setParents] = useState<Parent[]>([]);
 const [loading, setLoading] = useState(true);
+const searchParams = useSearchParams();
+const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
 useEffect(() => {
   const fetchParents = async () => {
@@ -68,7 +71,9 @@ useEffect(() => {
 
   fetchParents();
 }, []);
-
+const filteredParents = parents.filter((parent) =>
+    parent.name.toLowerCase().includes(searchQuery)
+  );
   const renderRow = (item: Parent) => (
     <tr
       key={item.id}
@@ -104,10 +109,10 @@ useEffect(() => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-300">
               <Image src="/filter.png" alt="" width={14} height={14} />
             </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-300">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
             {role === "admin" && (
@@ -117,7 +122,7 @@ useEffect(() => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={parents} />
+      <Table columns={columns} renderRow={renderRow} data={filteredParents} />
       {/* PAGINATION */}
       <Pagination />
     </div>

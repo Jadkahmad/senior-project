@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { useSearchParams } from "next/navigation";
+
 type Tutor = {
   id: number;
   teacherId: string;
@@ -65,6 +67,8 @@ const columns = [
 const TeacherListPage = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
 const [loading, setLoading] = useState(true);
+const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 useEffect(() => {
   const fetchTutors = async () => {
     try {
@@ -95,6 +99,10 @@ useEffect(() => {
 
   fetchTutors();
 }, []);
+
+ const filteredTutors = tutors.filter((tutor) =>
+    tutor.name.toLowerCase().includes(searchQuery)
+  );
 
   const renderRow = (item: Tutor) => (
     <tr
@@ -161,8 +169,11 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={tutors} />
+      {loading ? (
+        <p className="p-4 text-gray-400">Loading Tutors...</p>
+      ) : (
+      <Table columns={columns} renderRow={renderRow} data={filteredTutors} />
+      )}
       {/* PAGINATION */}
       <Pagination />
     </div>

@@ -5,6 +5,7 @@ import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import TeacherForm from "@/app/components/forms/TeacherForm";
 import ParentForm from "@/app/components/forms/ParentForm";
@@ -38,6 +39,8 @@ const ApplicationListPage = () => {
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [isApprovalFormOpen, setIsApprovalFormOpen] = useState(false);
   const [isRejectFormOpen, setIsRejectFormOpen] = useState(false);
+  const searchParams = useSearchParams(); 
+  const searchQuery = searchParams.get("search")?.toLowerCase() || ""; 
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -65,6 +68,12 @@ const ApplicationListPage = () => {
 
     fetchApplications();
   }, []);
+  const filteredApplications = applications.filter((app) =>
+    app.fullname.toLowerCase().includes(searchQuery) ||
+    app.userType.toLowerCase().includes(searchQuery)
+
+
+  );
 
   const handleStatusChange = (item: Application, newStatus: "approved" | "rejected" | "pending") => {
     setApplications((prev) =>
@@ -130,8 +139,14 @@ const ApplicationListPage = () => {
           <TableSearch />
         </div>
       </div>
-      <Table columns={columns} renderRow={renderRow} data={applications} />
-      <Pagination />
+      { loading ? (
+        <p className="p-4 text-gray-400">Loading applications...</p>
+      ) : (
+      <Table columns={columns} renderRow={renderRow} data={filteredApplications} />
+      
+    )}
+
+    <Pagination />
 
       {/* Open the correct form based on userType when an application is approved */}
       {isApprovalFormOpen && selectedApplication?.userType && (
