@@ -45,6 +45,7 @@ const ApplicationListPage = () => {
         const res = await fetch("/api/application");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
+        console.log(data)
         const formatted = data.map((item: any) => ({
           id: item.id,
           userType: item.User_type,

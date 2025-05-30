@@ -80,6 +80,7 @@ const StudentForm = ({
       
       try {
         const data = new FormData();
+        console.log(data);
         data.append("id", formData.id);
         data.append("email", formData.email);
         data.append("password", formData.password);

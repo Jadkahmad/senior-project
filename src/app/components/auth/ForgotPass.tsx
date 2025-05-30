@@ -3,17 +3,39 @@ import React, { useState } from "react";
 import AuthButton from "./AuthButton";
 import Link from "next/link";
 import { Icon } from "lucide-react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ForgotPassword = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
+const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  setLoading(true);
+  setError(null);
 
+  const form = event.currentTarget;
+  const email = form.email.value;
+
+  try {
+    const res = await fetch("/api/forgot-pass", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Something went wrong");
+
+    toast.success("Reset link sent to your email");
+  } catch (err: any) {
+    setError(err.message);
+    toast.error(err.message);
+  } finally {
     setLoading(false);
-  };
+  }
+};
+
   return (
     <div>
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
@@ -30,11 +52,10 @@ const ForgotPassword = () => {
           />
         </div>
 
-        <div className="mt-4">
-          <Link href={"/reset-pass"}>
-            <AuthButton type="Send Reset Link" loading={loading} />
-          </Link>
-        </div>
+<div className="mt-4">
+  <AuthButton type="Send Reset Link" loading={loading} />
+</div>
+
 
         {/* Password Reset Guidance Section */}
         <div className="mt-4 text-sm text-gray-500">

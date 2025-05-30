@@ -3,26 +3,29 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useRouter } from "next/navigation"
 import InputField from "./InputField";
-import { Router } from "lucide-react";
 
-const schema = z.object({
-  id: z
-    .string()
-    .min(3, { message: "ID must be at least 3 characters long!" })
-    .max(20, { message: "ID must be at most 20 characters long!" }),
+// Define base schema shared by both modes
+const baseSchema = {
+  id: z.string().min(3, { message: "ID must be at least 3 characters long!" }).max(20),
   firstName: z.string().min(1, { message: "First name is required!" }),
   lastName: z.string().min(1, { message: "Last name is required!" }),
   email: z.string().email({ message: "Invalid email address!" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long!" }),
   address: z.string().min(1, { message: "Address is required!" }),
-  phone: z.string().min(1,{message:"Phone number is required"})
+  phone: z.string().min(1, { message: "Phone number is required!" }),
+};
+
+const createSchema = z.object({
+  ...baseSchema,
+  password: z.string().min(8, { message: "Password must be at least 8 characters long!" }),
 });
 
-type Inputs = z.infer<typeof schema>;
+const updateSchema = z.object({
+  ...baseSchema,
+  password: z.string().optional(),
+});
+
+type Inputs = z.infer<typeof createSchema> | z.infer<typeof updateSchema>;
 
 const ParentForm = ({
   type,
@@ -31,44 +34,45 @@ const ParentForm = ({
   type: "create" | "update";
   data?: any;
 }) => {
-  console.log("Parent form data:", data);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(type === "create" ? createSchema : updateSchema),
   });
 
   const onSubmit = handleSubmit(async (formData) => {
-    
     try {
-      const data = new FormData();
-      data.append("id", formData.id);
-      data.append("firstName", formData.firstName);
-      data.append("lastName", formData.lastName);
-      data.append("email", formData.email);
-      data.append("password", formData.password);
-      data.append("address", formData.address);
-      data.append("phone", formData.phone); 
-  
+      const form = new FormData();
+      form.append("id", formData.id);
+      form.append("firstName", formData.firstName);
+      form.append("lastName", formData.lastName);
+      form.append("email", formData.email);
+      form.append("address", formData.address);
+      form.append("phone", formData.phone);
+
+      // Only include password in "create" or if filled in "update"
+      if (type === "create" || formData.password) {
+        form.append("password", formData.password!);
+      }
+
       const res = await fetch("/api/parents", {
         method: type === "create" ? "POST" : "PUT",
-        body: data,
+        body: form,
       });
-  
-      if (!res.ok) throw new Error("Failed to create parent");
-  
+
+      if (!res.ok) throw new Error("Failed to submit parent data");
+
       const result = await res.json();
       console.log("Success:", result.message);
       window.location.reload();
-
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Error adding parent");
+      alert("Error submitting parent form.");
     }
   });
-  
+
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <h1 className="text-xl font-semibold">
@@ -90,14 +94,14 @@ const ParentForm = ({
         <InputField
           label="First Name"
           name="firstName"
-          defaultValue={data?.name.split(" ")[0]}
+          defaultValue={data?.name?.split(" ")[0] || ""}
           register={register}
           error={errors?.firstName}
         />
         <InputField
           label="Last Name"
           name="lastName"
-          defaultValue={data?.name.split(" ")[1]}
+          defaultValue={data?.name?.split(" ")[1] || ""}
           register={register}
           error={errors?.lastName}
         />
@@ -108,14 +112,16 @@ const ParentForm = ({
           register={register}
           error={errors?.email}
         />
-        <InputField
-          label="Password"
-          name="password"
-          type="password"
-          defaultValue={data?.password}
-          register={register}
-          error={errors?.password}
-        />
+        {type === "create" && (
+          <InputField
+            label="Password"
+            name="password"
+            type="password"
+            defaultValue=""
+            register={register}
+            error={errors?.password}
+          />
+        )}
         <InputField
           label="Address"
           name="address"
@@ -123,11 +129,12 @@ const ParentForm = ({
           register={register}
           error={errors?.address}
         />
-         <InputField
+        <InputField
           label="Phone Number"
           name="phone"
           defaultValue={data?.phone}
           register={register}
+          error={errors?.phone}
         />
       </div>
 

@@ -80,7 +80,6 @@ export async function PUT(req: Request) {
     const subjectspecs = formData.get('subjectspecs') as string;
     const gender = formData.get('gender') as string;
     const address = formData.get('address') as string;
-console.log(formData);
     await db.execute(
       `UPDATE tutor SET 
         Full_name = ?, 
@@ -116,11 +115,35 @@ export async function DELETE(req: Request) {
   try {
     const { id } = await req.json();
 
-    await db.execute('DELETE FROM tutor WHERE User_id = ?', [id]);
+    if (!id) {
+      return NextResponse.json({ error: "Missing tutor user ID" }, { status: 400 });
+    }
 
-    return NextResponse.json({ message: 'Tutor deleted successfully' });
+    const db = await createConnection();
+
+    await db.beginTransaction();
+
+ const [tutorRow]: any = await db.execute(`SELECT id FROM Tutor WHERE Id = ?`, [id]);
+    const tutorId = tutorRow?.[0]?.id;
+    
+      await db.execute(
+        `DELETE FROM session WHERE Tutor_id = ?`,
+        [tutorId]
+      );
+
+    await db.execute(`DELETE FROM Tutor WHERE Id = ?`, [id]);
+
+    await db.commit();
+
+    return NextResponse.json({ message: "Tutor and related data deleted" }, { status: 200 });
   } catch (err) {
-    console.error('Error deleting tutor:', err);
-    return NextResponse.json({ error: 'Failed to delete tutor' }, { status: 500 });
+    console.error("Error deleting tutor:", err);
+
+    try {
+      const db = await createConnection();
+      await db.rollback(); 
+    } catch {}
+
+    return NextResponse.json({ error: "Failed to delete tutor" }, { status: 500 });
   }
 }

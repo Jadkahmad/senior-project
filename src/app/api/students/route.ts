@@ -85,3 +85,40 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch students' }, { status: 500 });
   }
 }
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing student user ID" }, { status: 400 });
+    }
+
+    const db = await createConnection();
+
+    await db.beginTransaction();
+console.log(id);
+ const [studentRow]: any = await db.execute(`SELECT id FROM Student WHERE Id = ?`, [id]);
+ console.log([studentRow]);
+    const studentId = studentRow?.[0]?.id;
+    
+      await db.execute(
+        `DELETE FROM session WHERE Student_id = ?`,
+        [studentId]
+      );
+
+    await db.execute(`DELETE FROM Student WHERE Id = ?`, [id]);
+
+    await db.commit();
+
+    return NextResponse.json({ message: "Student and related data deleted" }, { status: 200 });
+  } catch (err) {
+    console.error("Error deleting student:", err);
+
+    try {
+      const db = await createConnection();
+      await db.rollback(); 
+    } catch {}
+
+    return NextResponse.json({ error: "Failed to delete student" }, { status: 500 });
+  }
+}

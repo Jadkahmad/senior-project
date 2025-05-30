@@ -66,13 +66,42 @@ const SessionListPage = () => {
     fetchSessions();
   }, []);
 
-  const handleStatusChange = (id: number, newStatus: string) => {
+const handleStatusChange = async (id: number, newStatus: string) => {
+  // Optimistically update UI
+  setSessions((prev) =>
+    prev.map((session) =>
+      session.id === id ? { ...session, status: newStatus } : session
+    )
+  );
+
+  try {
+    const res = await fetch("/api/sessionStatus", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status: newStatus }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.error || "Failed to update status");
+    }
+
+    console.log("Session status updated:", result.message);
+  } catch (err) {
+    console.error("Failed to update session status:", err);
+
+    // Optionally revert UI change on failure
     setSessions((prev) =>
       prev.map((session) =>
-        session.id === id ? { ...session, status: newStatus } : session
+        session.id === id ? { ...session, status: "pending" } : session
       )
     );
-  };
+
+    alert("Failed to update session status on the server.");
+  }
+};
+
 
   const renderRow = (session: Session) => (
     <tr

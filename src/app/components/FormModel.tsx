@@ -74,8 +74,11 @@ const FormModal = ({
             case "payment":
               endpoint = "/api/payment";
               break;
-            case "parent":
-              endpoint = "/api/parents";
+            case "student":
+              endpoint = "/api/students";
+              break;
+            case "teacher":
+              endpoint = "/api/tutors";
               break;
               
             default:
