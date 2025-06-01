@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -139,15 +139,7 @@ const SingleTeacherPage = () => {
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-            <Link className="p-3 rounded-md bg-lamaSkyLight" href="/">
-              Classes
-            </Link>
-            <Link className="p-3 rounded-md bg-lamaPurpleLight" href="/">
-              Students
-            </Link>
-            <Link className="p-3 rounded-md bg-lamaYellowLight" href="/">
-              Lessons
-            </Link>
+            
           </div>
         </div>
         <Announcements />

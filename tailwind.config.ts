@@ -7,11 +7,19 @@ export default {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./node_modules/react-tailwindcss-select/dist/index.esm.js",
+    
   ],
   theme: {
+    
     extend: {},
   },
   plugins: [
     require('@tailwindcss/forms'),
   ],
 } satisfies Config
+
+module.exports = {
+  darkMode: "class", // Enables class-based dark mode
+  theme: {},
+  plugins: [],
+};

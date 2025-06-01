@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import InputField from "./InputField";
 
 // Define base schema shared by both modes
@@ -62,27 +64,24 @@ const ParentForm = ({
         body: form,
       });
 
-      if (!res.ok) throw new Error("Failed to submit parent data");
+      if (!res.ok) throw new Error("Failed to create parent");
 
       const result = await res.json();
       console.log("Success:", result.message);
-      window.location.reload();
+
+      // Show success toast
+      toast.success("Successfully Added");
+
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Error submitting parent form.");
+      toast.error("Error adding parent");
     }
   });
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new parent" : "Update parent"}
-      </h1>
-
-      <span className="text-xs text-gray-400 font-medium">
-        Parent Information
-      </span>
-
+      <h1 className="text-xl font-semibold">{type === "create" ? "Create a new parent" : "Update parent"}</h1>
+      <span className="text-xs text-gray-400 font-medium">Parent Information</span>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
           label="ID"
@@ -137,12 +136,10 @@ const ParentForm = ({
           error={errors?.phone}
         />
       </div>
-
-      <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
-        {type === "create" ? "Create" : "Update"}
-      </button>
+      <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">{type === "create" ? "Create" : "Update"}</button>
     </form>
   );
 };
 
 export default ParentForm;
+

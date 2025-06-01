@@ -33,7 +33,7 @@ export const authOptions = {
           password === process.env.ADMIN_PASSWORD
         ) {
           console.log("Admin test");
-          return { id: "admin", name: "Admin", role: "admin" };
+          return { id: "admin", name: "Jad", role: "admin" };
         }
 
         // Student login

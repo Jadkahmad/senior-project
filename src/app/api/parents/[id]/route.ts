@@ -15,14 +15,11 @@ export async function GET(req: NextRequest) {
         id,
         User_id AS userId,
         Email AS email,
-        Full_name AS fullName,
-        Availability AS availability,
+        First_Name AS firstName,
+        Last_Name As lastName,
         Phone_number AS phone,
-        Address AS address,
-        Experience_years AS experienceYears,
-        Subject_specification AS subjectspecs,
-        Gender AS gender
-      FROM tutor
+        Address AS address
+      FROM Parent
       WHERE id = ? or User_id = ?
       `,
       [id,id]

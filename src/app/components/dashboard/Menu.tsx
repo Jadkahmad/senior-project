@@ -95,20 +95,23 @@ const Menu = () => {
           {section.items.map((item) => {
             const isLogout = item.label === "Logout";
             const isProfile = item.label === "Profile";
+            const isSettings = item.label === "Settings";
             const isBookASession = item.label == "Book a session";
             if (
-              role === "admin" ||
-              role !== "admin" && (isLogout || isProfile ||isBookASession)
+              (role === "admin" && !isProfile) ||
+              role !== "admin" && (isLogout || isProfile ||isBookASession || isSettings)
             ) {
               return isLogout ? (
                 <button
                   key={item.label}
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-sky-100 w-full"
+                  className=" cursor-pointer flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-sky-100 w-full"
                 >
+                  
                   <Image src={item.icon} alt="" width={20} height={20} />
                   <span className="hidden lg:block">{item.label}</span>
                 </button>
+                
               ) : (
                 <Link
                   key={item.label}

@@ -11,7 +11,15 @@ const schema = z.object({
 
 type RejectInputs = z.infer<typeof schema>;
 
-const RejectForm = ({ onClose }: { onClose: () => void }) => {
+const RejectForm = ({
+  onClose,
+  email,
+  applicationId,
+}: {
+  onClose: () => void;
+  email: string;
+  applicationId: number;
+}) => {
   const {
     register,
     handleSubmit,
@@ -20,13 +28,34 @@ const RejectForm = ({ onClose }: { onClose: () => void }) => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (formData: RejectInputs) => {
-    toast.success("Rejection reason submitted successfully!");
-    onClose();
+  const onSubmit = async (formData: RejectInputs) => {
+    try {
+      const res = await fetch("/api/rejectAccount", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          reason: formData.rejectionReason,
+          applicationId: applicationId
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to send rejection email");
+
+     
+      toast.success("Rejection email sent and status updated.");
+      onClose();
+    } catch (err) {
+      console.error("Submission error:", err);
+      toast.error("Failed to process rejection.");
+    }
   };
 
   return (
-    <form className="flex flex-col gap-6 p-6 bg-white rounded-md w-[90%] md:w-[60%] lg:w-[50%]" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-6 p-6 bg-white rounded-md w-[90%] md:w-[60%] lg:w-[50%]"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <h2 className="text-xl font-semibold">Rejection Reason</h2>
       <span className="text-lg text-gray-500 font-medium">
         Please enter the reason for rejection below.

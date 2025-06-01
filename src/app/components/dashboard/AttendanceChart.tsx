@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import {
   BarChart,
@@ -11,36 +12,26 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-const data = [
-  {
-    name: "Mon",
-    present: 60,
-    absent: 40,
-  },
-  {
-    name: "Tue",
-    present: 70,
-    absent: 60,
-  },
-  {
-    name: "Wed",
-    present: 90,
-    absent: 75,
-  },
-  {
-    name: "Thu",
-    present: 90,
-    absent: 75,
-  },
-  {
-    name: "Fri",
-    present: 65,
-    absent: 55,
-  },
-];
+import { useEffect, useState } from "react";
 
 const AttendanceChart = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      try {
+        const res = await fetch("/api/get-attendance");
+        const json = await res.json();
+        console.log(json);
+        setData(json);
+      } catch (error) {
+        console.error("Failed to fetch attendance data", error);
+      }
+    };
+
+    fetchAttendance();
+  }, []);
+
   return (
     <div className="bg-white rounded-lg p-4 h-full">
       <div className="flex justify-between items-center">

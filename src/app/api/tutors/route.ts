@@ -18,12 +18,13 @@ export async function POST(req: Request){
     const gender = formData.get('gender') as string;
     const userid = formData.get('id') as string;
     const address = formData.get('address') as string;
+    const availability = formData.get('availability') as string;
     const hashedPassword = await bcrypt.hash(password, 10); 
    
     await db.execute(
         `INSERT INTO tutor
-        (password,Full_name, Email, Phone_Number, Subject_specification,Experience_years, Gender,User_id,Address)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)`,
+        (password,Full_name, Email, Phone_Number, Subject_specification,Experience_years, Gender,User_id,Address,Availability)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)`,
         [
             hashedPassword,
         firstName + " " + lastName,
@@ -33,7 +34,8 @@ export async function POST(req: Request){
           experienceYears,
           gender,
           userid,
-          address
+          address,
+          availability
         ]
       );
      const transporter = nodemailer.createTransport({
@@ -80,6 +82,7 @@ export async function PUT(req: Request) {
     const subjectspecs = formData.get('subjectspecs') as string;
     const gender = formData.get('gender') as string;
     const address = formData.get('address') as string;
+    const availability = formData.get('availability') as string;
     await db.execute(
       `UPDATE tutor SET 
         Full_name = ?, 
@@ -89,7 +92,8 @@ export async function PUT(req: Request) {
         Experience_years = ?, 
         Gender = ?, 
         Address = ? ,
-        User_id = ?
+        User_id = ?,
+        Availability = ?
       WHERE id = ?`,
       [
         `${firstName} ${lastName}`,
@@ -100,6 +104,7 @@ export async function PUT(req: Request) {
         gender,
         address,
         id,
+        availability,
         dbid
       ]
     );

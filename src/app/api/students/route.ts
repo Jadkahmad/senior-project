@@ -17,6 +17,7 @@ export async function POST(req: Request){
     const parent = formData.get('parentId');
     const birthday = formData.get('birthday') as string;
     const gender = formData.get('gender') as string;
+    const status = formData.get('status') as string;
 
     const hashedPassword = await bcrypt.hash(password, 10); 
    
@@ -38,6 +39,16 @@ export async function POST(req: Request){
           userid
         ]
       );
+
+      if (status === "Approved" && formData.get("applicationId")) {
+  const applicationId = formData.get("applicationId") as string;
+  
+  await db.execute(
+    `UPDATE application SET Status = 'Approved' WHERE id = ?`,
+    [applicationId]
+  );
+}
+
       const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -120,5 +131,51 @@ console.log(id);
     } catch {}
 
     return NextResponse.json({ error: "Failed to delete student" }, { status: 500 });
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const formData = await req.formData();
+
+    const dbId = formData.get("dbId") as string;
+    const password = formData.get("password") as string;
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const phone = formData.get("phone") as string;
+    const address = formData.get("address") as string;
+    const birthday = formData.get("birthday") as string;
+    const gender = formData.get("gender") as string;
+    const regtype = (formData.get("regtype") as string).replace(/-/g, "_");
+    const level = formData.get("level") as string;
+
+    let updateQuery = `
+      UPDATE student
+      SET First_name = ?, Last_name = ?, DOB = ?, Gender = ?, Registration_type = ?, Level = ?
+    `;
+    const params: any[] = [
+      firstName,
+      lastName,
+      birthday,
+      gender,
+      regtype,
+      level
+    ];
+
+    if (password && password.trim() !== "") {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateQuery += `, Password = ?`;
+      params.push(hashedPassword);
+    }
+
+    updateQuery += ` WHERE id = ?`;
+    params.push(dbId);
+
+    await db.execute(updateQuery, params);
+
+    return NextResponse.json({ message: "Student updated successfully!" }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating student:", error);
+    return NextResponse.json({ error: "Failed to update student" }, { status: 500 });
   }
 }

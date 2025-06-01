@@ -7,7 +7,7 @@ import { role } from "@/app/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import { useSearchParams } from "next/navigation";
 type Student = {
   id: number;
   studentId: string;
@@ -34,6 +34,10 @@ const columns = [
 const StudentListPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+
+
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -66,6 +70,12 @@ const StudentListPage = () => {
 
     fetchStudents();
   }, []);
+
+  const filtered = students.filter((student) =>
+    student.name.toLowerCase().includes(searchQuery) ||
+    student.address.toLowerCase().includes(searchQuery) ||
+    student.dateOfAdmission.toLowerCase().includes(searchQuery)
+  );
 
   const renderRow = (item: Student) => (
     <tr
@@ -123,8 +133,11 @@ const StudentListPage = () => {
         </div>
       </div>
 
-      {/* LIST */}
+      {loading ? (
+        <p className="p-4 text-gray-400">Loading Students...</p>
+      ) : (
       <Table columns={columns} renderRow={renderRow} data={students} />
+      )}
 
       {/* PAGINATION */}
       <Pagination />

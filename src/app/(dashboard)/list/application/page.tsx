@@ -5,6 +5,7 @@ import Table from "@/app/components/dashboard/Table";
 import TableSearch from "@/app/components/dashboard/TableSearch";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import TeacherForm from "@/app/components/forms/TeacherForm";
 import ParentForm from "@/app/components/forms/ParentForm";
@@ -38,6 +39,8 @@ const ApplicationListPage = () => {
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [isApprovalFormOpen, setIsApprovalFormOpen] = useState(false);
   const [isRejectFormOpen, setIsRejectFormOpen] = useState(false);
+  const searchParams = useSearchParams(); 
+  const searchQuery = searchParams.get("search")?.toLowerCase() || ""; 
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -66,6 +69,12 @@ const ApplicationListPage = () => {
 
     fetchApplications();
   }, []);
+  const filteredApplications = applications.filter((app) =>
+    app.fullname.toLowerCase().includes(searchQuery) ||
+    app.userType.toLowerCase().includes(searchQuery)
+
+
+  );
 
   const handleStatusChange = (item: Application, newStatus: "approved" | "rejected" | "pending") => {
     setApplications((prev) =>
@@ -131,8 +140,14 @@ const ApplicationListPage = () => {
           <TableSearch />
         </div>
       </div>
-      <Table columns={columns} renderRow={renderRow} data={applications} />
-      <Pagination />
+      { loading ? (
+        <p className="p-4 text-gray-400">Loading applications...</p>
+      ) : (
+      <Table columns={columns} renderRow={renderRow} data={filteredApplications} />
+      
+    )}
+
+    <Pagination />
 
       {/* Open the correct form based on userType when an application is approved */}
       {isApprovalFormOpen && selectedApplication?.userType && (
@@ -142,8 +157,8 @@ const ApplicationListPage = () => {
             <p className="text-gray-500 ">Fill in the credentials to activate the user's account.</p>
 
             {/* Dynamically render the correct form */}
-            {selectedApplication.userType === "tutor" && <TeacherForm type="create" data={selectedApplication} />}
-            {selectedApplication.userType === "student" && <StudentForm type="create" data={selectedApplication} />}
+            {selectedApplication.userType === "tutor" && <TeacherForm type="create" data={selectedApplication}  />}
+            {selectedApplication.userType === "student" && <StudentForm type="create" data={selectedApplication}  applicationId={selectedApplication.id}/>}
             {selectedApplication.userType === "parent" && <ParentForm type="create" data={selectedApplication} />}
 
             <button
@@ -165,14 +180,15 @@ const ApplicationListPage = () => {
         </div>
       )}
 
-      {/* Open RejectForm when an application is rejected */}
-      {isRejectFormOpen && selectedApplication && (
-       <div className="bg-black opacity-90 w-screen h-screen absolute left-0 top-0 z-50 flex items-center justify-center">
-          
-          <RejectForm onClose={() => setIsRejectFormOpen(false)} />
-        </div>
-        
-      )}
+     {isRejectFormOpen && selectedApplication && (
+  <div className="bg-black opacity-90 w-screen h-screen absolute left-0 top-0 z-50 flex items-center justify-center">
+    <RejectForm
+      applicationId={selectedApplication.id}
+      email={selectedApplication.email}
+      onClose={() => setIsRejectFormOpen(false)}
+    />
+  </div>
+)}
     </div>
   );
 };

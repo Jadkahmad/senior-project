@@ -8,6 +8,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { useSearchParams } from "next/navigation";
+import { availableMemory } from "process";
+
 type Tutor = {
   id: number;
   teacherId: string;
@@ -18,12 +21,18 @@ type Tutor = {
   subjects: string[];
   classes: string[];
   address: string;
+  availability:string; 
 };
 
 const columns = [
   {
     header: "Info",
     accessor: "info",
+  },
+  {
+    header: "Availability",
+    accessor: "availability",
+    className: "hidden md:table-cell",
   },
   {
     header: "Teacher ID",
@@ -59,6 +68,8 @@ const columns = [
 const TeacherListPage = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
 const [loading, setLoading] = useState(true);
+const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 useEffect(() => {
   const fetchTutors = async () => {
     try {
@@ -77,6 +88,7 @@ useEffect(() => {
         subjects: t.Subject_specification ? t.Subject_specification.split(",") : [],
         classes: t.Experience_years ? [`${t.Experience_years} years`] : [],
         address: t.Address || "N/A",
+        availability: t.Availability
       }));
 
       setTutors(formatted);
@@ -89,6 +101,10 @@ useEffect(() => {
 
   fetchTutors();
 }, []);
+
+ const filteredTutors = tutors.filter((tutor) =>
+    tutor.name.toLowerCase().includes(searchQuery)
+  );
 
   const renderRow = (item: Tutor) => (
     <tr
@@ -108,6 +124,7 @@ useEffect(() => {
           <p className="text-xs text-gray-500">{item?.email}</p>
         </div>
       </td>
+      <td className="hidden md:table-cell">{item.availability}</td>
       <td className="hidden md:table-cell">{item.teacherId}</td>
       <td className="hidden md:table-cell">{item.subjects.join(",")}</td>
       <td className="hidden md:table-cell">{item.classes.join(",")}</td>
@@ -154,8 +171,11 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={tutors} />
+      {loading ? (
+        <p className="p-4 text-gray-400">Loading Tutors...</p>
+      ) : (
+      <Table columns={columns} renderRow={renderRow} data={filteredTutors} />
+      )}
       {/* PAGINATION */}
       <Pagination />
     </div>

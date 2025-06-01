@@ -11,23 +11,23 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 // TEMPORARY
 const events = [
-  {
+ {
     id: 1,
-    title: "Lorem ipsum dolor",
-    time: "12:00 PM - 2:00 PM",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 2,
-    title: "Lorem ipsum dolor",
-    time: "12:00 PM - 2:00 PM",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    title: "Math Tutoring Session - Grade 8",
+    time: "10:00 AM - 11:30 AM",
+    description: "Private in-home tutoring session assigned to Mr. Ahmad for student Maya in Tripoli.",
   },
   {
     id: 3,
-    title: "Lorem ipsum dolor",
-    time: "12:00 PM - 2:00 PM",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    title: "Session Feedback Review",
+    time: "3:30 PM - 4:00 PM",
+    description: "Parent feedback submitted for Ali's private English session. Admin review required for follow-up.",
+  },
+   {
+    id: 5,
+    title: "Weekly Progress Meeting",
+    time: "5:00 PM - 6:00 PM",
+    description: "Management team sync to review session reports, tutor performance, and upcoming registrations.",
   },
 ];
 
