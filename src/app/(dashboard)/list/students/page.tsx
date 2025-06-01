@@ -71,7 +71,7 @@ const StudentListPage = () => {
     fetchStudents();
   }, []);
 
-  const filtered = students.filter((student) =>
+  const filteredStudents = students.filter((student) =>
     student.name.toLowerCase().includes(searchQuery) ||
     student.address.toLowerCase().includes(searchQuery) ||
     student.dateOfAdmission.toLowerCase().includes(searchQuery)
@@ -136,7 +136,7 @@ const StudentListPage = () => {
       {loading ? (
         <p className="p-4 text-gray-400">Loading Students...</p>
       ) : (
-      <Table columns={columns} renderRow={renderRow} data={students} />
+      <Table columns={columns} renderRow={renderRow} data={filteredStudents} />
       )}
 
       {/* PAGINATION */}
